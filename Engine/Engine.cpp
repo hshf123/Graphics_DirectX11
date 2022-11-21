@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "Engine.h"
-#include "Device.h"
-#include "SwapChain.h"
 
 // ------------------
 //		Engine
@@ -22,7 +20,7 @@ void Engine::Init(const WindowInfo& info)
 	_device->Init();
 	_swapChain->Init(_info, _device);
 
-	_device->GetDeviceContext()->RSSetViewports(1, &_viewport);
+	DEVICECTX->RSSetViewports(1, &_viewport);
 }
 
 void Engine::Render()

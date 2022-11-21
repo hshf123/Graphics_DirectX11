@@ -51,6 +51,9 @@ if (FAILED(hr))										 \
 
 extern unique_ptr<class Engine> GEngine;
 
+#define DEVICE			GEngine->GetDevice()->GetDevice()
+#define DEVICECTX		GEngine->GetDevice()->GetDeviceContext()
+
 // -----------------
 //		struct
 // -----------------
@@ -61,4 +64,10 @@ struct WindowInfo
 	uint32 width;
 	uint32 height;
 	bool windowed;
+};
+
+struct Vertex
+{
+	Vec3 pos;
+	Vec4 color;
 };

@@ -1,5 +1,10 @@
 #pragma once
 
+#include "Device.h"
+#include "SwapChain.h"
+#include "Mesh.h"
+#include "Shader.h"
+
 // ------------------
 //		Engine
 // ------------------
@@ -11,12 +16,16 @@ public:
 	void Render();
 
 	void ResizeWindow(int32 width, int32 height);
-private:
-	WindowInfo		_info;
-	D3D11_VIEWPORT	_viewport = {};
-	D3D11_RECT		_scissorRect = {};
 
-	shared_ptr<class Device> _device;
-	shared_ptr<class SwapChain> _swapChain;
+	shared_ptr<Device>		GetDevice() { return _device; }
+	shared_ptr<SwapChain>	GetSwapChain() { return _swapChain; }
+
+private:
+	WindowInfo				_info;
+	D3D11_VIEWPORT			_viewport = {};
+	D3D11_RECT				_scissorRect = {};
+
+	shared_ptr<Device>		_device;
+	shared_ptr<SwapChain>	_swapChain;
 };
 
