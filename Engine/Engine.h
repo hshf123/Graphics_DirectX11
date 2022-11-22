@@ -4,6 +4,7 @@
 #include "SwapChain.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "ConstantBuffer.h"
 
 // ------------------
 //		Engine
@@ -19,6 +20,7 @@ public:
 
 	shared_ptr<Device>		GetDevice() { return _device; }
 	shared_ptr<SwapChain>	GetSwapChain() { return _swapChain; }
+	shared_ptr<ConstantBuffer> GetCB() { return _cb; }
 
 private:
 	WindowInfo				_info;
@@ -27,5 +29,6 @@ private:
 
 	shared_ptr<Device>		_device;
 	shared_ptr<SwapChain>	_swapChain;
+	shared_ptr<ConstantBuffer> _cb;
 };
 

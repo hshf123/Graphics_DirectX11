@@ -22,17 +22,19 @@ void Mesh::Init(vector<Vertex>& vec)
 	InitData.pSysMem = &vec[0];
 	hr = DEVICE->CreateBuffer(&bd, &InitData, &_vertexBuffer);
 	CHECK_FAIL(hr, L"Failed Create Vertex Buffer");
-
-	// Set vertex buffer
-	uint32 stride = sizeof(Vertex);
-	uint32 offset = 0;
-	DEVICECTX->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-
-	// Set primitive topology
-	DEVICECTX->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void Mesh::Render()
 {
+	// Set vertex buffer
+	uint32 stride = sizeof(Vertex);
+	uint32 offset = 0;
+	DEVICECTX->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+	// Set primitive topology
+	DEVICECTX->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	GEngine->GetCB()->PushData(0, &_transform);
+	GEngine->GetCB()->PushData(1, &_transform);
+
 	DEVICECTX->Draw(_vertexCount, 0);
 }

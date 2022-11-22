@@ -25,13 +25,12 @@ void Shader::Init(const WCHAR* path)
 		_vsBlob->GetBufferSize(), &_vertexLayout);
 	_vsBlob->Release();
 	CHECK_FAIL(hr, L"Failed Create Input Layout");
-
-	// Set the input layout
-	DEVICECTX->IASetInputLayout(_vertexLayout);
 }
 
 void Shader::Update()
 {
+	// Set the input layout
+	DEVICECTX->IASetInputLayout(_vertexLayout);
 	// Render a triangle
 	DEVICECTX->VSSetShader(_vertexShader, nullptr, 0);
 	DEVICECTX->PSSetShader(_pixelShader, nullptr, 0);

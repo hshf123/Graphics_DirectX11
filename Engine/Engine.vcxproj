@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EnginePch.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="SwapChain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EnginePch.cpp" />

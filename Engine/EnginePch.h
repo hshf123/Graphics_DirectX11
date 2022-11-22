@@ -71,3 +71,8 @@ struct Vertex
 	Vec3 pos;
 	Vec4 color;
 };
+
+struct Transform
+{
+	Vec4 offset;
+};

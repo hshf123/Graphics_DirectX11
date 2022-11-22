@@ -16,9 +16,11 @@ void Engine::Init(const WindowInfo& info)
 
 	_device = make_shared<Device>();
 	_swapChain = make_shared<SwapChain>();
+	_cb = make_shared<ConstantBuffer>();
 
 	_device->Init();
 	_swapChain->Init(_info, _device);
+	_cb->Init(sizeof(Transform));
 
 	DEVICECTX->RSSetViewports(1, &_viewport);
 }
