@@ -14,6 +14,11 @@ void SwapChain::Init(const WindowInfo& info, shared_ptr<Device> device)
 	CreateRTV();
 }
 
+void SwapChain::SetRTVDSV()
+{
+	DEVICECTX->OMSetRenderTargets(1, &_renderTargetView, GEngine->GetDSB()->GetDSV());
+}
+
 void SwapChain::Present()
 {
 	_swapChain->Present(0, 0);
@@ -98,8 +103,7 @@ void SwapChain::CreateSwapChain()
 
 	dxgiFactory->Release();
 
-	if (FAILED(hr))
-		return;
+	CHECK_FAIL(hr, L"Failed to Failed to Create SwapChain");
 }
 
 void SwapChain::CreateRTV()
@@ -113,8 +117,5 @@ void SwapChain::CreateRTV()
 
 	hr = _device->GetDevice()->CreateRenderTargetView(pBackBuffer, nullptr, &_renderTargetView);
 	pBackBuffer->Release();
-	if (FAILED(hr))
-		return;
-
-	_device->GetDeviceContext()->OMSetRenderTargets(1, &_renderTargetView, nullptr);
+	CHECK_FAIL(hr, L"Failed to Create RenderTargetView");
 }

@@ -9,6 +9,7 @@ class SwapChain
 public:
 	void Init(const WindowInfo& info, shared_ptr<class Device> device);
 	
+	void SetRTVDSV();
 	void Present();
 
 	IDXGISwapChain* GetSwapChain() { return _swapChain; }

@@ -2,9 +2,9 @@
 #include "ConstantBuffer.h"
 #include "Engine.h"
 
-// ---------------------
+// ------------------------
 //		ConstantBuffer
-// ---------------------
+// ------------------------
 
 void ConstantBuffer::Init(uint32 size)
 {

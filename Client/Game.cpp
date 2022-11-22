@@ -47,13 +47,26 @@ void Game::Update()
 {
 	//GEngine->Render();
 	DEVICECTX->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::LightSteelBlue);
+	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
+	GEngine->GetSwapChain()->SetRTVDSV();
 
 	shader->Update();
 
 	{
 		Transform t;
-		t.offset = Vec4(0.f, 0.f, 0.f, 0.f);
+		t.offset = Vec4(0.f, 0.f, 0.4f, 0.f);
 		mesh->SetTransform(t);
+
+		mesh->SetTexture(texture);
+
+		mesh->Render();
+	}
+
+	{
+		Transform t;
+		t.offset = Vec4(0.25f, 0.25f, 0.2f, 0.f);
+		mesh->SetTransform(t);
+
 		mesh->SetTexture(texture);
 
 		mesh->Render();

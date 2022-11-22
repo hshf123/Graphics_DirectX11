@@ -17,19 +17,26 @@ void Engine::Init(const WindowInfo& info)
 	_device = make_shared<Device>();
 	_swapChain = make_shared<SwapChain>();
 	_cb = make_shared<ConstantBuffer>();
+	_dsb = make_shared<DepthStencilBuffer>();
 
 	_device->Init();
 	_swapChain->Init(_info, _device);
 	_cb->Init(sizeof(Transform));
+	_dsb->Init(_info);
 
 	DEVICECTX->RSSetViewports(1, &_viewport);
 }
 
 void Engine::Render()
 {
-	// Just clear the backbuffer, Render Begine
-	_device->GetDeviceContext()->ClearRenderTargetView(_swapChain->GetRTV(), Colors::LightSteelBlue);
+	// Render Begin
+	DEVICECTX->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::LightSteelBlue);
+	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
+	GEngine->GetSwapChain()->SetRTVDSV();
 
+	// TODO
+
+	// Render End
 	_swapChain->Present();
 }
 
