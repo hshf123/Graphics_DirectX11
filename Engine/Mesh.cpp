@@ -61,5 +61,7 @@ void Mesh::Render()
 	GEngine->GetCB()->PushData(0, &_transform);
 	GEngine->GetCB()->PushData(1, &_transform);
 
+	_tex->Render();
+
 	DEVICECTX->DrawIndexed(_indexCount, 0, 0);
 }

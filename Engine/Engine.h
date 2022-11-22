@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "ConstantBuffer.h"
+#include "Texture.h"
 
 // ------------------
 //		Engine

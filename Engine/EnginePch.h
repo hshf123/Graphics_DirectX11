@@ -13,6 +13,12 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 
+#include <DirectXTex.h>
+#include <DirectXTex.inl>
+
+#define _HAS_STD_BYTE 0
+#include <filesystem>
+namespace fs = std::filesystem;
 using namespace std;
 using namespace DirectX;
 
@@ -21,6 +27,11 @@ using namespace DirectX;
 // -----------------
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib,"d3d11.lib")
+#ifdef _DEBUG
+#pragma comment(lib, "DirectXTex\\DirectXTex_Debug.lib")
+#else
+#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+#endif
 
 // -----------------
 //		typedef
@@ -70,6 +81,7 @@ struct Vertex
 {
 	Vec3 pos;
 	Vec4 color;
+	Vec2 uv;
 };
 
 struct Transform
