@@ -45,6 +45,8 @@ void Game::Init(const WindowInfo& info)
 
 void Game::Update()
 {
+	GEngine->Update();
+
 	//GEngine->Render();
 	DEVICECTX->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::LightSteelBlue);
 	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
@@ -53,18 +55,17 @@ void Game::Update()
 	shader->Update();
 
 	{
-		Transform t;
-		t.offset = Vec4(0.f, 0.f, 0.4f, 0.f);
-		mesh->SetTransform(t);
+		static Transform t = {};
 
-		mesh->SetTexture(texture);
+		if (INPUT->GetButton(KEY_TYPE::W))
+			t.offset.y += 1.f * DELTATIME;
+		if (INPUT->GetButton(KEY_TYPE::S))
+			t.offset.y -= 1.f * DELTATIME;
+		if (INPUT->GetButton(KEY_TYPE::A))
+			t.offset.x -= 1.f * DELTATIME;
+		if (INPUT->GetButton(KEY_TYPE::D))
+			t.offset.x += 1.f * DELTATIME;
 
-		mesh->Render();
-	}
-
-	{
-		Transform t;
-		t.offset = Vec4(0.25f, 0.25f, 0.2f, 0.f);
 		mesh->SetTransform(t);
 
 		mesh->SetTexture(texture);

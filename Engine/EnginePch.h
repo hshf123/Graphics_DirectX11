@@ -65,6 +65,9 @@ extern unique_ptr<class Engine> GEngine;
 #define DEVICE			GEngine->GetDevice()->GetDevice()
 #define DEVICECTX		GEngine->GetDevice()->GetDeviceContext()
 
+#define INPUT			GEngine->GetInput()
+#define DELTATIME		GEngine->GetTimer()->GetDeltaTime()
+
 // -----------------
 //		struct
 // -----------------

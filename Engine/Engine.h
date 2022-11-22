@@ -8,6 +8,9 @@
 #include "Texture.h"
 #include "DepthStencilBuffer.h"
 
+#include "Input.h"
+#include "Timer.h"
+
 // ------------------
 //		Engine
 // ------------------
@@ -24,15 +27,25 @@ public:
 	shared_ptr<SwapChain>	GetSwapChain() { return _swapChain; }
 	shared_ptr<ConstantBuffer> GetCB() { return _cb; }
 	shared_ptr<DepthStencilBuffer> GetDSB() { return _dsb; }
+	shared_ptr<Input> GetInput() { return _input; }
+	shared_ptr<Timer> GetTimer() { return _timer; }
+
+public:
+	void Update();
 
 private:
-	WindowInfo				_info;
-	D3D11_VIEWPORT			_viewport = {};
-	D3D11_RECT				_scissorRect = {};
+	void ShowFPS();
 
-	shared_ptr<Device>		_device;
-	shared_ptr<SwapChain>	_swapChain;
-	shared_ptr<ConstantBuffer> _cb;
-	shared_ptr<DepthStencilBuffer> _dsb;
+private:
+	WindowInfo								_info;
+	D3D11_VIEWPORT							_viewport = {};
+	D3D11_RECT								_scissorRect = {};
+
+	shared_ptr<Device>						_device;
+	shared_ptr<SwapChain>					_swapChain;
+	shared_ptr<ConstantBuffer>				_cb;
+	shared_ptr<DepthStencilBuffer>			_dsb;
+	shared_ptr<Input>						_input;
+	shared_ptr<Timer>						_timer;
 };
 
