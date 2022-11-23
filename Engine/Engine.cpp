@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Engine.h"
+#include "Material.h"
 
 // ------------------
 //		Engine
@@ -14,16 +15,10 @@ void Engine::Init(const WindowInfo& info)
 	_viewport = { 0,0,static_cast<FLOAT>(_info.width), static_cast<FLOAT>(_info.height), 0.f, 1.f};
 	_scissorRect = CD3D11_RECT(0, 0, _info.width, _info.height);
 
-	_device = make_shared<Device>();
-	_swapChain = make_shared<SwapChain>();
-	_cb = make_shared<ConstantBuffer>();
-	_dsb = make_shared<DepthStencilBuffer>();
-	_input = make_shared<Input>();
-	_timer = make_shared<Timer>();
-
 	_device->Init();
 	_swapChain->Init(_info, _device);
-	_cb->Init(sizeof(Transform));
+	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(Transform), 256);
+	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(MaterialParams), 256);
 	_dsb->Init(_info);
 	_input->Init(_info.hWnd);
 	_timer->Init();
@@ -67,4 +62,14 @@ void Engine::ShowFPS()
 	::wsprintf(text, L"FPS : %d", fps);
 
 	::SetWindowText(_info.hWnd, text);
+}
+
+void Engine::CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 count)
+{
+	uint8 typeInt = static_cast<uint8>(reg);
+	assert(_constantBuffers.size() == typeInt);
+
+	shared_ptr<ConstantBuffer> buffer = make_shared<ConstantBuffer>();
+	buffer->Init(reg, bufferSize, count);
+	_constantBuffers.push_back(buffer);
 }

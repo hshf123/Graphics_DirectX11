@@ -13,12 +13,6 @@ void Texture::Init(const wstring& path)
 	CreateSamplerState();
 }
 
-void Texture::Render()
-{
-	DEVICECTX->PSSetShaderResources(0, 1, &_srv);
-	DEVICECTX->PSSetSamplers(0, 1, &_samplerState);
-}
-
 void Texture::CreateTexture(const wstring& path)
 {
 	// 파일 확장자 얻기
@@ -53,7 +47,15 @@ void Texture::CreateView()
 
 void Texture::CreateSamplerState()
 {
-	D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC(D3D11_DEFAULT);
-	HRESULT hr = DEVICE->CreateSamplerState(&samplerDesc, &_samplerState);
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HRESULT hr = DEVICE->CreateSamplerState(&sampDesc, &_samplerState);
 	CHECK_FAIL(hr, L"Failed to Create SamplerState");
 }

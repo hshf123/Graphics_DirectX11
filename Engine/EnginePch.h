@@ -5,6 +5,7 @@
 // -----------------
 #include <iostream>
 #include <vector>
+#include <array>
 #include <fstream>
 
 #include <windows.h>
@@ -62,15 +63,38 @@ if (FAILED(hr))										 \
 
 extern unique_ptr<class Engine> GEngine;
 
-#define DEVICE			GEngine->GetDevice()->GetDevice()
-#define DEVICECTX		GEngine->GetDevice()->GetDeviceContext()
+#define DEVICE				GEngine->GetDevice()->GetDevice()
+#define DEVICECTX			GEngine->GetDevice()->GetDeviceContext()
+#define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
-#define INPUT			GEngine->GetInput()
-#define DELTATIME		GEngine->GetTimer()->GetDeltaTime()
+#define INPUT				GEngine->GetInput()
+#define DELTATIME			GEngine->GetTimer()->GetDeltaTime()
 
 // -----------------
 //		struct
 // -----------------
+
+enum class CBV_REGISTER : uint8
+{
+	b0,
+	b1,
+	b2,
+	b3,
+	b4,
+
+	END
+};
+
+enum class SRV_REGISTER : uint8
+{
+	t0,
+	t1,
+	t2,
+	t3,
+	t4,
+
+	END
+};
 
 struct WindowInfo
 {

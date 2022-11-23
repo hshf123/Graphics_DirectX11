@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Mesh.h"
 #include "Engine.h"
+#include "Material.h"
 
 // ---------------
 //		Mesh
@@ -58,10 +59,9 @@ void Mesh::Render()
 	// Set primitive topology
 	DEVICECTX->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	GEngine->GetCB()->PushData(0, &_transform);
-	GEngine->GetCB()->PushData(1, &_transform);
+	CONST_BUFFER(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&_transform);
 
-	_tex->Render();
+	_mat->Update();
 
 	DEVICECTX->DrawIndexed(_indexCount, 0, 0);
 }

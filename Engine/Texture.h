@@ -9,7 +9,8 @@ class Texture
 public:
 	void Init(const wstring& path);
 
-	void Render();
+	ID3D11ShaderResourceView** GetSRVAddress() { return &_srv; }
+	ID3D11SamplerState** GetSamplerStateAddress() { return &_samplerState; }
 
 private:
 	void CreateTexture(const wstring& path);
