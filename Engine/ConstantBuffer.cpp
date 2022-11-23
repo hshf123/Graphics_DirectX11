@@ -39,8 +39,6 @@ void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	hr = DEVICE->CreateBuffer(&bd, nullptr, &_constantBuffer);
 	CHECK_FAIL(hr, L"Failed Create Constant Buffer");
-
-	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 }
 
 void ConstantBuffer::PushData(void* buffer, uint32 size)
