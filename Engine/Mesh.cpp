@@ -3,6 +3,16 @@
 #include "Engine.h"
 #include "Material.h"
 
+Mesh::Mesh() : Object(OBJECT_TYPE::MESH)
+{
+
+}
+
+Mesh::~Mesh()
+{
+
+}
+
 // ---------------
 //		Mesh
 // ---------------
@@ -59,5 +69,5 @@ void Mesh::Render()
 	// Set primitive topology
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	CONTEXT->DrawIndexed(_indexCount, 0, 0);
+	CONTEXT->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
 }

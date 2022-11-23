@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Object.h"
 
 // -------------------
 //		GameObject
@@ -10,7 +11,7 @@ class MeshRenderer;
 class Camera;
 class MonoBehaviour;
 
-class GameObject : public enable_shared_from_this<GameObject>
+class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
 public:
 	GameObject();

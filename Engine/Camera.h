@@ -15,7 +15,7 @@ class Camera : public Component
 {
 public:
 	Camera();
-	~Camera();
+	virtual ~Camera();
 
 	void FinalUpdate() override;
 	void Render();

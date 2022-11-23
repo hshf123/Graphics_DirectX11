@@ -18,6 +18,11 @@ public:
 	void Init(const WindowInfo& info);
 	void Update();
 
+	void Render();
+private:
+	void RenderBegin();
+	void RenderEnd();
+
 public:
 	void ResizeWindow(int32 width, int32 height);
 
@@ -29,11 +34,7 @@ public:
 
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 
-public:
-	void Render();
-private:
-	void RenderBegin();
-	void RenderEnd();
+
 
 private:
 	void ShowFPS();

@@ -1,12 +1,16 @@
 #pragma once
+#include "Object.h"
 
 // -----------------
 //		Texture
 // -----------------
 
-class Texture
+class Texture :public Object
 {
 public:
+	Texture();
+	virtual ~Texture();
+
 	void Init(const wstring& path);
 
 	ID3D11ShaderResourceView** GetSRVAddress() { return &_srv; }

@@ -39,21 +39,19 @@ void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	hr = DEVICE->CreateBuffer(&bd, nullptr, &_constantBuffer);
 	CHECK_FAIL(hr, L"Failed Create Constant Buffer");
-}
 
-void ConstantBuffer::Clear()
-{
-	_currentIndex = 0;
+	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 }
 
 void ConstantBuffer::PushData(void* buffer, uint32 size)
 {
+	assert(_elementSize == ((size + 255) & ~255));
+
 	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 	uint32 slot = static_cast<uint32>(_reg);
 	BYTE* data = static_cast<BYTE*>(_mappedBuffer.pData);
-	::memcpy(&data[_currentIndex * _elementSize], buffer, size);
+	::memcpy(_mappedBuffer.pData, buffer, size);
 	CONTEXT->Unmap(_constantBuffer, 0);
 	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
-	_currentIndex++;
 }

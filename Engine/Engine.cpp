@@ -13,7 +13,6 @@
 void Engine::Init(const WindowInfo& info)
 {
 	_info = info;
-	ResizeWindow(_info.width, _info.height);
 
 	// 그려질 화면 크기 설정
 	_viewport = { 0,0,static_cast<FLOAT>(_info.width), static_cast<FLOAT>(_info.height), 0.f, 1.f};
@@ -27,6 +26,7 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Input)->Init(_info.hWnd);
 	GET_SINGLE(Timer)->Init();
 
+	ResizeWindow(_info.width, _info.height);
 	CONTEXT->RSSetViewports(1, &_viewport);
 }
 
@@ -68,8 +68,6 @@ void Engine::RenderBegin()
 void Engine::RenderEnd()
 {
 	_swapChain->Present();
-	GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->Clear();
-	GetConstantBuffer(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
 }
 
 void Engine::ShowFPS()

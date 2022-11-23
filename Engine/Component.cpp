@@ -7,7 +7,7 @@
 //		Component
 // -------------------
 
-Component::Component(COMPONENT_TYPE type) : _type(type)
+Component::Component(COMPONENT_TYPE type) : Object(OBJECT_TYPE::COMPONENT), _type(type)
 {
 
 }

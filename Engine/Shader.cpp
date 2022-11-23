@@ -2,6 +2,16 @@
 #include "Shader.h"
 #include "Engine.h"
 
+Shader::Shader() : Object(OBJECT_TYPE::SHADER)
+{
+
+}
+
+Shader::~Shader()
+{
+
+}
+
 // -----------------
 //		Shader
 // -----------------
@@ -16,8 +26,9 @@ void Shader::Init(const WCHAR* path)
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	uint32 numElements = ARRAYSIZE(layout);
 
@@ -26,12 +37,12 @@ void Shader::Init(const WCHAR* path)
 		_vsBlob->GetBufferSize(), &_vertexLayout);
 	_vsBlob->Release();
 	CHECK_FAIL(hr, L"Failed Create Input Layout");
+	// Set the input layout
+	CONTEXT->IASetInputLayout(_vertexLayout);
 }
 
 void Shader::Update()
 {
-	// Set the input layout
-	CONTEXT->IASetInputLayout(_vertexLayout);
 	// Render a triangle
 	CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
 	CONTEXT->PSSetShader(_pixelShader, nullptr, 0);

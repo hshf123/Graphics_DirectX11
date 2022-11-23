@@ -19,7 +19,6 @@ public:
 
 	void Init(CBV_REGISTER reg, uint32 size, uint32 count);
 
-	void Clear();
 	void PushData(void* buffer, uint32 size);
 
 private:
@@ -28,8 +27,6 @@ private:
 
 	uint32					_elementSize = 0;
 	uint32					_elementCount = 0;
-
-	uint32					_currentIndex = 0;
 
 	CBV_REGISTER _reg = {};
 };
