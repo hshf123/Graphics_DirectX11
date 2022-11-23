@@ -33,6 +33,7 @@ public:
 
 public:
 	void Update();
+	void LateUpdate();
 
 private:
 	void ShowFPS();

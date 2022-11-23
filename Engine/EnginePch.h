@@ -111,7 +111,3 @@ struct Vertex
 	Vec2 uv;
 };
 
-struct Transform
-{
-	Vec4 offset;
-};

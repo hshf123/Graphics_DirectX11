@@ -59,9 +59,5 @@ void Mesh::Render()
 	// Set primitive topology
 	DEVICECTX->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	CONST_BUFFER(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&_transform);
-
-	_mat->Update();
-
 	DEVICECTX->DrawIndexed(_indexCount, 0, 0);
 }

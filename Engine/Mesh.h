@@ -4,16 +4,11 @@
 //		Mesh
 // ---------------
 
-class Material;
-
 class Mesh
 {
 public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer);
 	void Render();
-
-	void SetTransform(const Transform& transform) { _transform = transform; }
-	void SetMaterial(shared_ptr<Material> mat) { _mat = mat; }
 
 private:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
@@ -24,8 +19,5 @@ private:
 	ID3D11Buffer* _indexBuffer = nullptr;
 	uint32 _vertexCount = 0;
 	uint32 _indexCount = 0;
-
-	Transform _transform = {};
-	shared_ptr<Material> _mat = {};
 };
 
