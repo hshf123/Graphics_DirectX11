@@ -2,6 +2,7 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Transform.h"
 
 // ---------------------
 //		MeshRenderer
@@ -19,8 +20,7 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Render()
 {
-	//GetTransform()->Update();
-
-	_material->Update();
+	GetTransform()->PushData();
+	_material->PushData();
 	_mesh->Render();
 }

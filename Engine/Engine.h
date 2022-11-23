@@ -22,6 +22,8 @@ public:
 public:
 	void ResizeWindow(int32 width, int32 height);
 
+	WindowInfo GetWindow() { return _info; }
+
 	shared_ptr<Device>		GetDevice() { return _device; }
 	shared_ptr<SwapChain>	GetSwapChain() { return _swapChain; }
 	shared_ptr<DepthStencilBuffer> GetDSB() { return _dsb; }

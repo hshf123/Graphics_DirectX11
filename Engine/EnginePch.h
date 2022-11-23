@@ -13,7 +13,10 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
+#include <DirectXPackedVector.h>
 
+#include "SimpleMath.h"
+#include "SimpleMath.inl"
 #include <DirectXTex.h>
 #include <DirectXTex.inl>
 
@@ -37,19 +40,18 @@ using namespace DirectX;
 // -----------------
 //		typedef
 // -----------------
-using int8 = __int8;
-using int16 = __int16;
-using int32 = __int32;
-using int64 = __int64;
-using uint8 = unsigned __int8;
-using uint16 = unsigned __int16;
-using uint32 = unsigned __int32;
-using uint64 = unsigned __int64;
-using Matrix = XMMATRIX;
-using Vec4 = XMFLOAT4;
-using Vec3 = XMFLOAT3;
-using Vec2 = XMFLOAT2;
-using Vec = XMVECTOR;
+using int8		= __int8;
+using int16		= __int16;
+using int32		= __int32;
+using int64		= __int64;
+using uint8		= unsigned __int8;
+using uint16	= unsigned __int16;
+using uint32	= unsigned __int32;
+using uint64	= unsigned __int64;
+using Vec4		= DirectX::SimpleMath::Vector4;
+using Vec3		= DirectX::SimpleMath::Vector3;
+using Vec2		= DirectX::SimpleMath::Vector2;
+using Matrix	= DirectX::SimpleMath::Matrix;
 
 // -----------------
 //		Global
@@ -125,3 +127,7 @@ struct Vertex
 	Vec2 uv;
 };
 
+struct TransformParams
+{
+	Matrix matWVP;
+};

@@ -21,7 +21,7 @@ void Engine::Init(const WindowInfo& info)
 
 	_device->Init();
 	_swapChain->Init(_info, _device);
-	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(TransformMatrix), 256);
+	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(TransformParams), 256);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(MaterialParams), 256);
 	_dsb->Init(_info);
 	GET_SINGLE(Input)->Init(_info.hWnd);
@@ -34,6 +34,7 @@ void Engine::Update()
 {
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
+	GET_SINGLE(SceneManager)->Update();
 
 	Render();
 
@@ -47,10 +48,12 @@ void Engine::Render()
 	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
 	GEngine->GetSwapChain()->SetRTVDSV();
 
-	GET_SINGLE(SceneManager)->Update();
+	GET_SINGLE(SceneManager)->Render();
 
 	// Render End
 	_swapChain->Present();
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->Clear();
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
 }
 
 void Engine::ResizeWindow(int32 width, int32 height)

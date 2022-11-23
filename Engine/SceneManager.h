@@ -12,6 +12,7 @@ class SceneManager
 
 public:
 	void Update();
+	void Render(); // TEMP
 	void LoadScene(wstring sceneName);
 
 public:
