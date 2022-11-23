@@ -53,11 +53,11 @@ void Mesh::Render()
 	// Set vertex buffer
 	uint32 stride = sizeof(Vertex);
 	uint32 offset = 0;
-	DEVICECTX->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
+	CONTEXT->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 	// Set index buffer
-	DEVICECTX->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	// Set primitive topology
-	DEVICECTX->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	DEVICECTX->DrawIndexed(_indexCount, 0, 0);
+	CONTEXT->DrawIndexed(_indexCount, 0, 0);
 }

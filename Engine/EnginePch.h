@@ -80,7 +80,7 @@ public:												 \
 extern unique_ptr<class Engine> GEngine;
 
 #define DEVICE				GEngine->GetDevice()->GetDevice()
-#define DEVICECTX			GEngine->GetDevice()->GetDeviceContext()
+#define CONTEXT			GEngine->GetDevice()->GetDeviceContext()
 #define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
 #define INPUT				GET_SINGLE(Input)

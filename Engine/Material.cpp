@@ -14,8 +14,8 @@ void Material::PushData()
 			continue;
 
 		SRV_REGISTER reg = SRV_REGISTER(static_cast<int8>(SRV_REGISTER::t0) + i);
-		DEVICECTX->PSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
-		DEVICECTX->PSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
+		CONTEXT->PSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
+		CONTEXT->PSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 	}
 
 	// 파이프라인 세팅

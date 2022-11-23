@@ -12,7 +12,7 @@ ConstantBuffer::~ConstantBuffer()
 	if (_constantBuffer)
 	{
 		if (_constantBuffer != nullptr)
-			DEVICECTX->Unmap(_constantBuffer, 0);
+			CONTEXT->Unmap(_constantBuffer, 0);
 
 		_constantBuffer = nullptr;
 	}
@@ -39,8 +39,6 @@ void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	hr = DEVICE->CreateBuffer(&bd, nullptr, &_constantBuffer);
 	CHECK_FAIL(hr, L"Failed Create Constant Buffer");
-
-	DEVICECTX->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 }
 
 void ConstantBuffer::Clear()
@@ -50,10 +48,12 @@ void ConstantBuffer::Clear()
 
 void ConstantBuffer::PushData(void* buffer, uint32 size)
 {
+	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 	uint32 slot = static_cast<uint32>(_reg);
-	BYTE* data = (BYTE*)_mappedBuffer.pData;
-    ::memcpy(&data[_currentIndex * _elementSize], buffer, size);
-	DEVICECTX->VSSetConstantBuffers(slot, 1, &_constantBuffer);
-	DEVICECTX->PSSetConstantBuffers(slot, 1, &_constantBuffer);
+	BYTE* data = static_cast<BYTE*>(_mappedBuffer.pData);
+	::memcpy(&data[_currentIndex * _elementSize], buffer, size);
+	CONTEXT->Unmap(_constantBuffer, 0);
+	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
+	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
 	_currentIndex++;
 }

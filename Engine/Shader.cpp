@@ -31,10 +31,10 @@ void Shader::Init(const WCHAR* path)
 void Shader::Update()
 {
 	// Set the input layout
-	DEVICECTX->IASetInputLayout(_vertexLayout);
+	CONTEXT->IASetInputLayout(_vertexLayout);
 	// Render a triangle
-	DEVICECTX->VSSetShader(_vertexShader, nullptr, 0);
-	DEVICECTX->PSSetShader(_pixelShader, nullptr, 0);
+	CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
+	CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
 }
 
 void Shader::CreateVertexShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)

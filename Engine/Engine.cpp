@@ -27,7 +27,7 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Input)->Init(_info.hWnd);
 	GET_SINGLE(Timer)->Init();
 
-	DEVICECTX->RSSetViewports(1, &_viewport);
+	CONTEXT->RSSetViewports(1, &_viewport);
 }
 
 void Engine::Update()
@@ -43,17 +43,11 @@ void Engine::Update()
 
 void Engine::Render()
 {
-	// Render Begin
-	DEVICECTX->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::LightSteelBlue);
-	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
-	GEngine->GetSwapChain()->SetRTVDSV();
-
+	RenderBegin();
+	
 	GET_SINGLE(SceneManager)->Render();
 
-	// Render End
-	_swapChain->Present();
-	GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->Clear();
-	GetConstantBuffer(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
+	RenderEnd();
 }
 
 void Engine::ResizeWindow(int32 width, int32 height)
@@ -63,6 +57,20 @@ void Engine::ResizeWindow(int32 width, int32 height)
 	::SetWindowPos(_info.hWnd, 0, 100, 100, width, height, 0);
 }
 
+
+void Engine::RenderBegin()
+{
+	CONTEXT->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::LightSteelBlue);
+	CONTEXT->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
+	GEngine->GetSwapChain()->SetRTVDSV();
+}
+
+void Engine::RenderEnd()
+{
+	_swapChain->Present();
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->Clear();
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
+}
 
 void Engine::ShowFPS()
 {

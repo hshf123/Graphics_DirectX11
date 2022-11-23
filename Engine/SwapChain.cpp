@@ -16,7 +16,7 @@ void SwapChain::Init(const WindowInfo& info, shared_ptr<Device> device)
 
 void SwapChain::SetRTVDSV()
 {
-	DEVICECTX->OMSetRenderTargets(1, &_renderTargetView, GEngine->GetDSB()->GetDSV());
+	CONTEXT->OMSetRenderTargets(1, &_renderTargetView, GEngine->GetDSB()->GetDSV());
 }
 
 void SwapChain::Present()
