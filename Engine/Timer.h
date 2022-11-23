@@ -6,6 +6,8 @@
 
 class Timer
 {
+	SINGLETON(Timer);
+
 public:
 	void Init();
 	void Update();

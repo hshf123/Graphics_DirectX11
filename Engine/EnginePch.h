@@ -61,14 +61,28 @@ if (FAILED(hr))										 \
 	return;											 \
 }													 \
 
+#define SINGLETON(type)								 \
+private:											 \
+	type() { }								 		 \
+	~type() { }								 		 \
+													 \
+public:												 \
+	static type* GetInstance()				 		 \
+	{												 \
+		static type instance;				 		 \
+		return &instance;							 \
+	}												 \
+
+#define GET_SINGLE(type)		type::GetInstance()
+
 extern unique_ptr<class Engine> GEngine;
 
 #define DEVICE				GEngine->GetDevice()->GetDevice()
 #define DEVICECTX			GEngine->GetDevice()->GetDeviceContext()
 #define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
-#define INPUT				GEngine->GetInput()
-#define DELTATIME			GEngine->GetTimer()->GetDeltaTime()
+#define INPUT				GET_SINGLE(Input)
+#define DELTATIME			GET_SINGLE(Timer)->GetDeltaTime()
 
 // -----------------
 //		struct

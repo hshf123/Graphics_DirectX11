@@ -34,6 +34,8 @@ enum
 
 class Input
 {
+	SINGLETON(Input);
+
 public:
 	void Init(HWND hwnd);
 	void Update();

@@ -2,6 +2,9 @@
 #include "Engine.h"
 #include "Material.h"
 #include "Transform.h"
+#include "Input.h"
+#include "Timer.h"
+#include "SceneManager.h"
 
 // ------------------
 //		Engine
@@ -21,10 +24,20 @@ void Engine::Init(const WindowInfo& info)
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(TransformMatrix), 256);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(MaterialParams), 256);
 	_dsb->Init(_info);
-	_input->Init(_info.hWnd);
-	_timer->Init();
+	GET_SINGLE(Input)->Init(_info.hWnd);
+	GET_SINGLE(Timer)->Init();
 
 	DEVICECTX->RSSetViewports(1, &_viewport);
+}
+
+void Engine::Update()
+{
+	GET_SINGLE(Input)->Update();
+	GET_SINGLE(Timer)->Update();
+
+	Render();
+
+	ShowFPS();
 }
 
 void Engine::Render()
@@ -34,7 +47,7 @@ void Engine::Render()
 	DEVICECTX->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
 	GEngine->GetSwapChain()->SetRTVDSV();
 
-	// TODO
+	GET_SINGLE(SceneManager)->Update();
 
 	// Render End
 	_swapChain->Present();
@@ -47,22 +60,10 @@ void Engine::ResizeWindow(int32 width, int32 height)
 	::SetWindowPos(_info.hWnd, 0, 100, 100, width, height, 0);
 }
 
-void Engine::Update()
-{
-	_timer->Update();
-	_input->Update();
-
-	ShowFPS();
-}
-
-void Engine::LateUpdate()
-{
-	// TODO
-}
 
 void Engine::ShowFPS()
 {
-	uint32 fps = _timer->GetFps();
+	uint32 fps = GET_SINGLE(Timer)->GetFps();
 
 	WCHAR text[100] = L"";
 	::wsprintf(text, L"FPS : %d", fps);

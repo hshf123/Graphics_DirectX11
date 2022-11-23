@@ -16,6 +16,9 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{684fbe37-d6ae-4f6a-9223-3d9afb4c0739}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{d92f0938-e676-45c7-892a-8c42550ab55e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -48,12 +51,6 @@
     <ClInclude Include="DepthStencilBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Resource</Filter>
     </ClInclude>
@@ -71,6 +68,18 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,12 +113,6 @@
     <ClCompile Include="DepthStencilBuffer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
@@ -127,6 +130,18 @@
     </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
