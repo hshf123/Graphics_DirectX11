@@ -33,3 +33,9 @@ void DepthStencilBuffer::Init(const WindowInfo& info)
 	hr = DEVICE->CreateDepthStencilView(_depthStencilTexture, &dsvDesc, &_depthStencilView);
 	CHECK_FAIL(hr, L"Failed Create Depth Stencil View");
 }
+
+void DepthStencilBuffer::Clear()
+{
+	if (_depthStencilTexture) _depthStencilTexture = nullptr;
+	if (_depthStencilView) _depthStencilView = nullptr;
+}

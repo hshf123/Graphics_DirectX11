@@ -19,6 +19,9 @@ public:
 	void Update();
 
 	void Render();
+
+	void Clear();
+
 private:
 	void RenderBegin();
 	void RenderEnd();

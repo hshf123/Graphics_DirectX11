@@ -55,6 +55,15 @@ void Engine::Render()
 	RenderEnd();
 }
 
+void Engine::Clear()
+{
+	_device->Clear();
+	_swapChain->Clear();
+	for (shared_ptr<ConstantBuffer> cb : _constantBuffers)
+		cb->Clear();
+	_dsb->Clear();
+}
+
 void Engine::ResizeWindow(int32 width, int32 height)
 {
 	RECT rect = { 0,0,_info.width, _info.height };

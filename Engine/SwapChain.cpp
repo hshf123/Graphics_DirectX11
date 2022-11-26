@@ -14,6 +14,12 @@ void SwapChain::Init(const WindowInfo& info, shared_ptr<Device> device)
 	CreateRTV();
 }
 
+void SwapChain::Clear()
+{
+	if (_swapChain) _swapChain = nullptr;
+	if (_renderTargetView)_renderTargetView = nullptr;
+}
+
 void SwapChain::SetRTVDSV()
 {
 	CONTEXT->OMSetRenderTargets(1, &_renderTargetView, GEngine->GetDSB()->GetDSV());
@@ -54,7 +60,7 @@ void SwapChain::CreateSwapChain()
 	{
 		// DirectX 11.1 or later
 		ID3D11Device1* device1;
-		ID3D11DeviceContext1* deviceContext;
+		ID3D11DeviceContext1* deviceContext = nullptr;
 		hr = _device->GetDevice()->QueryInterface(__uuidof(ID3D11Device1), reinterpret_cast<void**>(&device1));
 		if (SUCCEEDED(hr))
 		{
@@ -77,7 +83,11 @@ void SwapChain::CreateSwapChain()
 			hr = swapChain->QueryInterface(__uuidof(IDXGISwapChain), reinterpret_cast<void**>(&_swapChain));
 		}
 
+		dxgiFactory->Release();
+		device1->Release();
+		deviceContext->Release();
 		dxgiFactory2->Release();
+		swapChain->Release();
 	}
 	else
 	{

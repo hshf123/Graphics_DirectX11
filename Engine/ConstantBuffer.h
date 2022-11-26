@@ -19,14 +19,15 @@ public:
 	~ConstantBuffer();
 
 	void Init(CBV_REGISTER reg, uint32 size, uint32 count);
+	void Clear();
 
 	void PushData(void* buffer, uint32 size);
 
 	void SetGlobalData(void* buffer, uint32 size);
 
 private:
-	ID3D11Buffer* _constantBuffer = nullptr;
-	D3D11_MAPPED_SUBRESOURCE _mappedBuffer;
+	ID3D11Buffer*				_constantBuffer = nullptr;
+	D3D11_MAPPED_SUBRESOURCE	_mappedBuffer;
 
 	uint32					_elementSize = 0;
 	uint32					_elementCount = 0;

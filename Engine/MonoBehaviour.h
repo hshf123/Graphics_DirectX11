@@ -10,7 +10,4 @@ class MonoBehaviour : public Component
 public:
 	MonoBehaviour();
 	virtual ~MonoBehaviour();
-
 };
-
-

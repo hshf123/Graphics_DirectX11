@@ -50,3 +50,9 @@ void Device::Init()
 	if (FAILED(hr))
 		return;
 }
+
+void Device::Clear()
+{
+	if (_device)  _device = nullptr;
+	if (_deviceContext) _deviceContext = nullptr;
+}

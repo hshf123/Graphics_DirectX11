@@ -8,6 +8,8 @@ class SwapChain
 {
 public:
 	void Init(const WindowInfo& info, shared_ptr<class Device> device);
+
+	void Clear();
 	
 	void SetRTVDSV();
 	void Present();

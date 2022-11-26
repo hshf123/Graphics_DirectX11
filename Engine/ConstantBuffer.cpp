@@ -51,6 +51,11 @@ void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 	CHECK_FAIL(hr, L"Failed Create Constant Buffer");
 }
 
+void ConstantBuffer::Clear()
+{
+	if (_constantBuffer) _constantBuffer = nullptr;
+}
+
 void ConstantBuffer::PushData(void* buffer, uint32 size)
 {
 	assert(_elementSize == ((size + 255) & ~255));

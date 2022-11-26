@@ -9,6 +9,8 @@ class Device
 public:
 	void Init();
 
+	void Clear();
+
 public:
 	ID3D11Device* GetDevice() { return  _device; }
 	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext; }
