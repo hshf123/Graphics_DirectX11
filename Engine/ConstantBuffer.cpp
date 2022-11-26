@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ConstantBuffer.h"
 #include "Engine.h"
+#include "Material.h"
+#include "Light.h"
 
 ConstantBuffer::ConstantBuffer()
 {
@@ -33,10 +35,18 @@ void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 	HRESULT hr;
 	D3D11_BUFFER_DESC bd = {};
 	// Create the constant buffer
-	bd.Usage = D3D11_USAGE_DYNAMIC;
+	if (_reg == CBV_REGISTER::b0)
+	{
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0;
+	}
+	else
+	{
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	}
 	bd.ByteWidth = bufferSize;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	hr = DEVICE->CreateBuffer(&bd, nullptr, &_constantBuffer);
 	CHECK_FAIL(hr, L"Failed Create Constant Buffer");
 }
@@ -45,11 +55,21 @@ void ConstantBuffer::PushData(void* buffer, uint32 size)
 {
 	assert(_elementSize == ((size + 255) & ~255));
 
-	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 	uint32 slot = static_cast<uint32>(_reg);
-	BYTE* data = static_cast<BYTE*>(_mappedBuffer.pData);
+	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
 	::memcpy(_mappedBuffer.pData, buffer, size);
 	CONTEXT->Unmap(_constantBuffer, 0);
+	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
+	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
+}
+
+void ConstantBuffer::SetGlobalData(void* buffer, uint32 size)
+{
+	assert(_reg == CBV_REGISTER::b0);
+	assert(_elementSize == ((size + 255) & ~255));
+
+	uint32 slot = static_cast<uint32>(_reg);
+	CONTEXT->UpdateSubresource(_constantBuffer, 0, nullptr, buffer, 0, 0);
 	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
 }

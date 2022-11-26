@@ -6,6 +6,7 @@
 
 enum class CONSTANT_BUFFER_TYPE : uint8
 {
+	GLOBAL,
 	TRANSFORM,
 	MATERIAL,
 	END
@@ -20,6 +21,8 @@ public:
 	void Init(CBV_REGISTER reg, uint32 size, uint32 count);
 
 	void PushData(void* buffer, uint32 size);
+
+	void SetGlobalData(void* buffer, uint32 size);
 
 private:
 	ID3D11Buffer* _constantBuffer = nullptr;

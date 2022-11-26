@@ -25,6 +25,9 @@
     <Filter Include="Object\Resource">
       <UniqueIdentifier>{b635627e-19f5-419e-8baa-1bf6774d35b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Etc">
+      <UniqueIdentifier>{0eb5f639-f98b-4245-b7d5-ce74f5c395fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -99,9 +102,14 @@
     <ClInclude Include="GameObject.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Resources.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Etc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +188,9 @@
     <ClCompile Include="Resources.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\default.hlsli">
@@ -188,8 +199,16 @@
     <None Include="SimpleMath.inl">
       <Filter>Utils</Filter>
     </None>
+    <None Include="..\Resources\Shader\params.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Resources\Shader\utils.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Engine.rc" />
+    <ResourceCompile Include="Engine.rc">
+      <Filter>Etc</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

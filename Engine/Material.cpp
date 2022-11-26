@@ -28,6 +28,5 @@ void Material::PushData()
 		CONTEXT->PSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 	}
 
-	// 파이프라인 세팅
 	_shader->Update();
 }

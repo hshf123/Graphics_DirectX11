@@ -10,6 +10,7 @@ enum class COMPONENT_TYPE : uint8
 	TRANSFORM,
 	MESH_RENDERER,
 	CAMERA,
+	LIGHT,
 	// ...
 	MONO_BEHAVIOUR,
 	END,
@@ -17,7 +18,7 @@ enum class COMPONENT_TYPE : uint8
 
 enum
 {
-	FIXED_COMPONENT_COUNT = static_cast<uint8>(COMPONENT_TYPE::END) - 1,
+	FIXED_COMPONENT_COUNT = static_cast<uint8>(COMPONENT_TYPE::END) - 1
 };
 
 class GameObject;
@@ -51,5 +52,4 @@ protected:
 	COMPONENT_TYPE _type;
 	weak_ptr<GameObject> _gameObject;
 };
-
 
