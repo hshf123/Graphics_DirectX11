@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Frustum.h"
 
 // -----------------
 //		Camera
@@ -30,6 +31,8 @@ private:
 
 	Matrix _matView = {};
 	Matrix _matProjection = {};
+
+	Frustum _frustum;
 
 public:
 	static Matrix S_MatView;
