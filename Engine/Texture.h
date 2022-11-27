@@ -11,7 +11,7 @@ public:
 	Texture();
 	virtual ~Texture();
 
-	void Init(const wstring& path);
+	virtual void Load(const wstring& path) override;
 
 	ID3D11ShaderResourceView** GetSRVAddress() { return &_srv; }
 	ID3D11SamplerState** GetSamplerStateAddress() { return &_samplerState; }

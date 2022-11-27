@@ -2,10 +2,11 @@
 #include "Engine.h"
 #include "Material.h"
 #include "Transform.h"
-#include "Input.h"
-#include "Timer.h"
+#include "Resources.h"
 #include "SceneManager.h"
 #include "Light.h"
+#include "Input.h"
+#include "Timer.h"
 
 // ------------------
 //		Engine
@@ -29,6 +30,7 @@ void Engine::Init(const WindowInfo& info)
 	_dsb->Init(_info);
 	GET_SINGLE(Input)->Init(_info.hWnd);
 	GET_SINGLE(Timer)->Init();
+	GET_SINGLE(Resources)->Init();
 
 	ResizeWindow(_info.width, _info.height);
 	GEngine->GetSwapChain()->SetRTVDSV();
