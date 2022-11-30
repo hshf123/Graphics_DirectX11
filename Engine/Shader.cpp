@@ -18,19 +18,31 @@ Shader::~Shader()
 
 void Shader::Init(const WCHAR* path, ShaderInfo info)
 {
+	_info = info;
 	HRESULT hr;
 	CreateVertexShader(path, "VS_Main", "vs_5_0");
 	CreatePixelShader(path, "PS_Main", "ps_5_0");
 	SetInputLayout();
-	SetPipelineState(info);
+	SetRasterizerState();
+	SetDepthStencilState();
+	SetBlendState();
 }
 
 void Shader::Update()
 {
+	float blendFactor[4];
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+	// Set the input layout
+	CONTEXT->IASetInputLayout(_inputLayout);
 	CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
 	CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
 	CONTEXT->RSSetState(_rasterizer);
 	CONTEXT->OMSetDepthStencilState(_depthStencilState, 0);
+	CONTEXT->OMSetBlendState(_blendState, blendFactor, 0xffffffff);
 }
 
 void Shader::CreateVertexShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
@@ -72,21 +84,16 @@ void Shader::SetInputLayout()
 
 	// Create the input layout
 	HRESULT hr = DEVICE->CreateInputLayout(layout, numElements, _vsBlob->GetBufferPointer(),
-		_vsBlob->GetBufferSize(), &_vertexLayout);
+		_vsBlob->GetBufferSize(), &_inputLayout);
 	_vsBlob->Release();
 	CHECK_FAIL(hr, L"Failed Create Input Layout");
-
-	// Set the input layout
-	CONTEXT->IASetInputLayout(_vertexLayout);
 }
 
-void Shader::SetPipelineState(ShaderInfo info)
+void Shader::SetRasterizerState()
 {
-	D3D11_RASTERIZER_DESC rasterizerDesc;
-	::ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
-	rasterizerDesc = CD3D11_RASTERIZER_DESC();
+	D3D11_RASTERIZER_DESC rasterizerDesc = CD3D11_RASTERIZER_DESC(D3D11_DEFAULT);
 
-	switch (info.rasterizerType)
+	switch (_info.rasterizerType)
 	{
 	case RASTERIZER_TYPE::CULL_BACK:
 		rasterizerDesc.FillMode = D3D11_FILL_SOLID;
@@ -105,12 +112,17 @@ void Shader::SetPipelineState(ShaderInfo info)
 		rasterizerDesc.CullMode = D3D11_CULL_NONE;
 		break;
 	}
+	
+	DEVICE->CreateRasterizerState(&rasterizerDesc, &_rasterizer);
+}
 
+void Shader::SetDepthStencilState()
+{
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	::ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc = CD3D11_DEPTH_STENCIL_DESC();
+	depthStencilDesc = CD3D11_DEPTH_STENCIL_DESC(D3D11_DEFAULT);
 
-	switch (info.depthStencilType)
+	switch (_info.depthStencilType)
 	{
 	case DEPTH_STENCIL_TYPE::LESS:
 		depthStencilDesc.DepthEnable = TRUE;
@@ -129,9 +141,26 @@ void Shader::SetPipelineState(ShaderInfo info)
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
 		break;
 	}
-	
-	DEVICE->CreateRasterizerState(&rasterizerDesc, &_rasterizer);
+
 	DEVICE->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
+}
+
+void Shader::SetBlendState()
+{
+	D3D11_BLEND_DESC bsDesc = CD3D11_BLEND_DESC(D3D11_DEFAULT);
+	// Clear the blend state description.
+	//ZeroMemory(&bsDesc, sizeof(D3D11_BLEND_DESC));
+	//bsDesc.RenderTarget[0].BlendEnable = TRUE;
+	//bsDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	//bsDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	//bsDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	//bsDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	//bsDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	//bsDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	//bsDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	// Create the blend state using the description.
+	HRESULT hr = DEVICE->CreateBlendState(&bsDesc, &_blendState);
+	CHECK_FAIL(hr, L"Failed to Create Blend State");
 }
 
 HRESULT Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)

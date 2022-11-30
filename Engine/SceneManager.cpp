@@ -104,6 +104,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma region SkyBox
 	{
 		shared_ptr<GameObject> skybox = make_shared<GameObject>();
+		skybox->SetName(L"SkyBox");
 		skybox->AddComponent(make_shared<Transform>());
 		skybox->SetCheckFrustum(false);
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -128,7 +129,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		cube->SetName(L"Cube");
 		cube->AddComponent(make_shared<Transform>());
 		cube->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		cube->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 300.f));
+		cube->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 150.f));
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
 			shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadCubeMesh();
@@ -136,7 +137,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 		{
 			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(GET_SINGLE(Resources)->Get<Shader>(L"Forward"));
+			material->SetShader(GET_SINGLE(Resources)->Get<Shader>(L"Deferred"));
 			material->SetTexture(0, GET_SINGLE(Resources)->Load<Texture>(L"Stone", L"..\\Resources\\Texture\\Stone.jpg"));
 			material->SetTexture(1, GET_SINGLE(Resources)->Load<Texture>(L"Stone_Normal", L"..\\Resources\\Texture\\Stone_Normal.jpg"));
 			meshRenderer->SetMaterial(material);
@@ -147,13 +148,14 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 
 #pragma region UI_Test
+	for (int32 i = 0; i < 3; ++i)
 	{
 		shared_ptr<GameObject> rectangle = make_shared<GameObject>();
 		rectangle->SetName(L"Rectangle");
 		rectangle->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
 		rectangle->AddComponent(make_shared<Transform>());
 		rectangle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		rectangle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 500.f)); // z값은 딱히 의미없음(0~1000)
+		rectangle->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 160), 250.f, 500.f)); // z값은 딱히 의미없음(0~1000)
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
 			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -162,7 +164,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(GET_SINGLE(Resources)->Get<Shader>(L"Forward"));
-			material->SetTexture(0, GET_SINGLE(Resources)->Load<Texture>(L"Stone", L"..\\Resources\\Texture\\Stone.jpg"));
+			material->SetTexture(0, GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->GetRTTexture(i));
 			meshRenderer->SetMaterial(material);
 		}
 		rectangle->AddComponent(meshRenderer);

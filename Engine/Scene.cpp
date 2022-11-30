@@ -52,12 +52,31 @@ void Scene::FinalUpdate()
 void Scene::Render()
 {
 	PushLightData();
+
+	// SwapChain Group 초기화
+	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(0);
+
+	// Deferred Group 초기화
+	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
+
+	
+
 	for (auto& gameObject : _gameObjects)
 	{
 		if (gameObject->GetCamera() == nullptr)
 			continue;
 
-		gameObject->GetCamera()->Render();
+		gameObject->GetCamera()->SortGameObject();
+
+		// Deferred OMSet
+		GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
+		gameObject->GetCamera()->Render_Deferred();
+
+		// Light OMSet
+
+		// Swapchain OMSet
+		GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+		gameObject->GetCamera()->Render_Forward();
 	}
 }
 

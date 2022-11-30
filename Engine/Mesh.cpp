@@ -29,7 +29,7 @@ void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
 	_vertexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = _vertexCount * sizeof(Vertex);
 
-	D3D11_BUFFER_DESC bd = {};
+	D3D11_BUFFER_DESC bd = CD3D11_BUFFER_DESC();
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = bufferSize;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -47,7 +47,7 @@ void Mesh::CreateIndexBuffer(const vector<uint32>& buffer)
 	_indexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = _indexCount * sizeof(uint32);
 
-	D3D11_BUFFER_DESC bd = {};
+	D3D11_BUFFER_DESC bd = CD3D11_BUFFER_DESC();
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = bufferSize;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
