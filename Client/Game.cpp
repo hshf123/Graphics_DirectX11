@@ -14,8 +14,3 @@ void Game::Update()
 {
 	GEngine->Update();
 }
-
-void Game::Clear()
-{
-	GEngine->Clear();
-}

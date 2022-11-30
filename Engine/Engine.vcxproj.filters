@@ -36,12 +36,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="SwapChain.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Object\Resource</Filter>
     </ClInclude>
@@ -108,6 +102,9 @@
     <ClInclude Include="Frustum.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
+    <ClInclude Include="DeviceAndSwapChain.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -117,12 +114,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="SwapChain.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
@@ -190,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="Frustum.cpp">
       <Filter>Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceAndSwapChain.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

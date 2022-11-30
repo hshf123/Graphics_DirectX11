@@ -20,8 +20,7 @@ void Engine::Init(const WindowInfo& info)
 	_viewport = { 0,0,static_cast<FLOAT>(_info.width), static_cast<FLOAT>(_info.height), 0.f, 1.f};
 	_scissorRect = CD3D11_RECT(0, 0, _info.width, _info.height);
 
-	_device->Init();
-	_swapChain->Init(_info, _device);
+	_deviceAndSwapChain->Init(info);
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), 256);
@@ -33,7 +32,7 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Resources)->Init();
 
 	ResizeWindow(_info.width, _info.height);
-	GEngine->GetSwapChain()->SetRTVDSV();
+	GEngine->GetDeviceAndSwapChain()->SetRTVDSV();
 	CONTEXT->RSSetViewports(1, &_viewport);
 }
 
@@ -57,15 +56,6 @@ void Engine::Render()
 	RenderEnd();
 }
 
-void Engine::Clear()
-{
-	_device->Clear();
-	_swapChain->Clear();
-	for (shared_ptr<ConstantBuffer> cb : _constantBuffers)
-		cb->Clear();
-	_dsb->Clear();
-}
-
 void Engine::ResizeWindow(int32 width, int32 height)
 {
 	RECT rect = { 0,0,_info.width, _info.height };
@@ -76,13 +66,13 @@ void Engine::ResizeWindow(int32 width, int32 height)
 
 void Engine::RenderBegin()
 {
-	CONTEXT->ClearRenderTargetView(GEngine->GetSwapChain()->GetRTV(), Colors::Black);
+	CONTEXT->ClearRenderTargetView(GEngine->GetDeviceAndSwapChain()->GetRTV(), Colors::Black);
 	CONTEXT->ClearDepthStencilView(GEngine->GetDSB()->GetDSV(), D3D11_CLEAR_DEPTH, 1.f, 0);
 }
 
 void Engine::RenderEnd()
 {
-	_swapChain->Present();
+	_deviceAndSwapChain->Present();
 }
 
 void Engine::ShowFPS()
