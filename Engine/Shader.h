@@ -9,6 +9,7 @@ enum class SHADER_TYPE : uint8
 {
 	DEFERRED,
 	FORWARD,
+	LIGHTING,
 };
 
 enum class RASTERIZER_TYPE : uint8
@@ -25,6 +26,17 @@ enum class DEPTH_STENCIL_TYPE : uint8
 	LESS_EQUAL,
 	GREATER,
 	GREATER_EQUAL,
+	NO_DEPTH_TEST,				// 깊이 테스트(X) + 깊이 기록(0)
+	NO_DEPTH_TEST_NO_WRITE,		// 깊이 테스트(X) + 깊이 기록(X)
+	LESS_NO_WRITE,				// 깊이 테스트(0) + 깊이 기록(X)
+};
+
+enum class BLEND_TYPE : uint8
+{
+	DEFAULT,			// 덮어쓰기
+	ALPHA_BLEND,		// ALPHA(투명도)를 이용한 블렌딩
+	ONE_TO_ONE_BLEND,	// 1:1 비율로
+	END,
 };
 
 struct ShaderInfo
@@ -32,6 +44,7 @@ struct ShaderInfo
 	SHADER_TYPE shaderType = SHADER_TYPE::FORWARD;
 	RASTERIZER_TYPE rasterizerType = RASTERIZER_TYPE::CULL_BACK;
 	DEPTH_STENCIL_TYPE depthStencilType = DEPTH_STENCIL_TYPE::LESS;
+	BLEND_TYPE blendType = BLEND_TYPE::DEFAULT;
 };
 
 class Shader : public Object
@@ -40,7 +53,7 @@ public:
 	Shader();
 	virtual ~Shader();
 
-	void Init(const WCHAR* path, ShaderInfo info = ShaderInfo());
+	void Init(const WCHAR* path, ShaderInfo info = ShaderInfo(), LPCSTR vs = "VS_Main", LPCSTR ps = "PS_Main");
 	void Update();
 
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }

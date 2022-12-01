@@ -16,12 +16,12 @@ Shader::~Shader()
 
 }
 
-void Shader::Init(const WCHAR* path, ShaderInfo info)
+void Shader::Init(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps)
 {
 	_info = info;
 	HRESULT hr;
-	CreateVertexShader(path, "VS_Main", "vs_5_0");
-	CreatePixelShader(path, "PS_Main", "ps_5_0");
+	CreateVertexShader(path, vs, "vs_5_0");
+	CreatePixelShader(path, ps, "ps_5_0");
 	SetInputLayout();
 	SetRasterizerState();
 	SetDepthStencilState();
@@ -140,25 +140,49 @@ void Shader::SetDepthStencilState()
 		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
 		break;
+	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST:
+		depthStencilDesc.DepthEnable = FALSE;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		break;
+	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE:
+		depthStencilDesc.DepthEnable = FALSE;
+		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		break;
+	case DEPTH_STENCIL_TYPE::LESS_NO_WRITE:
+		depthStencilDesc.DepthEnable = TRUE;
+		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		break;
 	}
 
-	DEVICE->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
+	HRESULT hr = DEVICE->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
+	CHECK_FAIL(hr, L"Failed to Create DepthStencilState");
 }
 
 void Shader::SetBlendState()
 {
 	D3D11_BLEND_DESC bsDesc = CD3D11_BLEND_DESC(D3D11_DEFAULT);
-	// Clear the blend state description.
-	//ZeroMemory(&bsDesc, sizeof(D3D11_BLEND_DESC));
-	//bsDesc.RenderTarget[0].BlendEnable = TRUE;
-	//bsDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	//bsDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	//bsDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	//bsDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	//bsDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	//bsDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	//bsDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-	// Create the blend state using the description.
+	D3D11_RENDER_TARGET_BLEND_DESC& rt = bsDesc.RenderTarget[0];
+	// SrcBlend = Pixel Shader
+	// DestBlend = Render Target
+	switch (_info.blendType)
+	{
+	case BLEND_TYPE::DEFAULT:
+		rt.BlendEnable = FALSE;
+		rt.SrcBlend = D3D11_BLEND_ONE;
+		rt.DestBlend = D3D11_BLEND_ZERO;
+		break;
+	case BLEND_TYPE::ALPHA_BLEND:
+		rt.BlendEnable = TRUE;
+		rt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		break;
+	case BLEND_TYPE::ONE_TO_ONE_BLEND:
+		rt.BlendEnable = TRUE;
+		rt.SrcBlend = D3D11_BLEND_ONE;
+		rt.DestBlend = D3D11_BLEND_ONE;
+		break;
+	}
 	HRESULT hr = DEVICE->CreateBlendState(&bsDesc, &_blendState);
 	CHECK_FAIL(hr, L"Failed to Create Blend State");
 }
