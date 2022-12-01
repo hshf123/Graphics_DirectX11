@@ -20,8 +20,8 @@ public:
 public:
 	ID3D11RenderTargetView* GetRTV() { return _rtv; }
 	ID3D11DepthStencilView* GetDSV() { return _dsv; }
-	ID3D11ShaderResourceView* GetSRV() { return _srv; }
 	ID3D11ShaderResourceView** GetSRVAddress() { return &_srv; }
+	ID3D11UnorderedAccessView** GetUAVAddress() { return &_uav; }
 	ID3D11SamplerState** GetSamplerStateAddress() { return &_samplerState; }
 
 private:
@@ -34,6 +34,8 @@ private:
 	ID3D11RenderTargetView*			_rtv;
 	ID3D11DepthStencilView*			_dsv;
 	ID3D11ShaderResourceView*		_srv;
+	ID3D11UnorderedAccessView*		_uav;
+
 	ID3D11SamplerState*				_samplerState;
 };
 

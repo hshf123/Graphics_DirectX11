@@ -56,7 +56,7 @@ void ConstantBuffer::Clear()
 	if (_constantBuffer) _constantBuffer = nullptr;
 }
 
-void ConstantBuffer::PushData(void* buffer, uint32 size)
+void ConstantBuffer::PushGraphicsData(void* buffer, uint32 size)
 {
 	assert(_elementSize == ((size + 255) & ~255));
 
@@ -68,7 +68,7 @@ void ConstantBuffer::PushData(void* buffer, uint32 size)
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
 }
 
-void ConstantBuffer::SetGlobalData(void* buffer, uint32 size)
+void ConstantBuffer::SetGraphicsGlobalData(void* buffer, uint32 size)
 {
 	assert(_reg == CBV_REGISTER::b0);
 	assert(_elementSize == ((size + 255) & ~255));
@@ -77,4 +77,15 @@ void ConstantBuffer::SetGlobalData(void* buffer, uint32 size)
 	CONTEXT->UpdateSubresource(_constantBuffer, 0, nullptr, buffer, 0, 0);
 	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
+}
+
+void ConstantBuffer::PushComputeData(void* buffer, uint32 size)
+{
+	assert(_elementSize == ((size + 255) & ~255));
+
+	uint32 slot = static_cast<uint32>(_reg);
+	CONTEXT->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedBuffer);
+	::memcpy(_mappedBuffer.pData, buffer, size);
+	CONTEXT->Unmap(_constantBuffer, 0);
+	CONTEXT->CSSetConstantBuffers(slot, 1, &_constantBuffer);
 }

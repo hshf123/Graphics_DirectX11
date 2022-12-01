@@ -16,7 +16,7 @@ Shader::~Shader()
 
 }
 
-void Shader::Init(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps)
+void Shader::CreateGraphicsShader(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps)
 {
 	_info = info;
 	HRESULT hr;
@@ -28,21 +28,39 @@ void Shader::Init(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps)
 	SetBlendState();
 }
 
+void Shader::CreateComputeShader(const WCHAR* path, LPCSTR main, LPCSTR version)
+{
+	_info.shaderType = SHADER_TYPE::COMPUTE;
+
+	HRESULT hr = CompileShaderFromFile(path, main, version, &_csBlob);
+	CHECK_FAIL(hr, L"Failed Compile Vertex Shader");
+
+	hr = DEVICE->CreateComputeShader(_csBlob->GetBufferPointer(), _csBlob->GetBufferSize(), nullptr, &_computeShader);
+	CHECK_FAIL(hr, L"Failed Compile Compute Shader");
+}
+
 void Shader::Update()
 {
-	float blendFactor[4];
-	// Setup the blend factor.
-	blendFactor[0] = 0.0f;
-	blendFactor[1] = 0.0f;
-	blendFactor[2] = 0.0f;
-	blendFactor[3] = 0.0f;
-	// Set the input layout
-	CONTEXT->IASetInputLayout(_inputLayout);
-	CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
-	CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
-	CONTEXT->RSSetState(_rasterizer);
-	CONTEXT->OMSetDepthStencilState(_depthStencilState, 0);
-	CONTEXT->OMSetBlendState(_blendState, blendFactor, 0xffffffff);
+	if (GetShaderType() == SHADER_TYPE::COMPUTE)
+	{
+		CONTEXT->CSSetShader(_computeShader, nullptr, 0);
+	}
+	else
+	{
+		float blendFactor[4];
+		// Setup the blend factor.
+		blendFactor[0] = 0.0f;
+		blendFactor[1] = 0.0f;
+		blendFactor[2] = 0.0f;
+		blendFactor[3] = 0.0f;
+		// Set the input layout
+		CONTEXT->IASetInputLayout(_inputLayout);
+		CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
+		CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
+		CONTEXT->RSSetState(_rasterizer);
+		CONTEXT->OMSetDepthStencilState(_depthStencilState, 0);
+		CONTEXT->OMSetBlendState(_blendState, blendFactor, 0xffffffff);
+	}
 }
 
 void Shader::CreateVertexShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)

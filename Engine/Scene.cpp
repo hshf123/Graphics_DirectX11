@@ -97,7 +97,7 @@ void Scene::RenderFinal()
 	// Swapchain OMSet
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetBackBufferRenderTargets();
 
-	GET_SINGLE(Resources)->Get<Material>(L"Final")->PushData();
+	GET_SINGLE(Resources)->Get<Material>(L"Final")->PushGraphicsData();
 	GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
 }
 
@@ -114,7 +114,7 @@ void Scene::PushLightData()
 		lightParams.lightCount++;
 	}
 
-	CONST_BUFFER(CONSTANT_BUFFER_TYPE::GLOBAL)->SetGlobalData(&lightParams, sizeof(LightParams));
+	CONST_BUFFER(CONSTANT_BUFFER_TYPE::GLOBAL)->SetGraphicsGlobalData(&lightParams, sizeof(LightParams));
 }
 
 void Scene::AddGameObject(shared_ptr<GameObject> gameObject)

@@ -61,6 +61,15 @@ void DeviceAndSwapChain::Init(const WindowInfo& info)
 		if (SUCCEEDED(hr))
 			break;
 	}
+
+	D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS hwOpts;
+	hr = _device->CheckFeatureSupport(D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS, &hwOpts, sizeof(hwOpts));	
+	if (hwOpts.ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x)
+	{
+		return;
+	}
+
+
 }
 
 void DeviceAndSwapChain::Present()

@@ -66,8 +66,14 @@ void Engine::ResizeWindow(int32 width, int32 height)
 void Engine::RenderBegin()
 {
 	CONTEXT->RSSetViewports(1, &_viewport);
-	ID3D11ShaderResourceView* srv[] = { nullptr,nullptr,nullptr,nullptr,nullptr };
-	CONTEXT->PSSetShaderResources(0, 5, &srv[0]);
+
+	// 사용중인 리소스 초기화
+	int8 count = static_cast<int8>(SRV_REGISTER::END);
+	vector<ID3D11ShaderResourceView*> vec(count, nullptr);
+	CONTEXT->PSSetShaderResources(0, count, &vec[0]);
+	CONTEXT->CSSetShaderResources(0, count, &vec[0]);
+	ID3D11UnorderedAccessView* uav = nullptr;
+	CONTEXT->CSSetUnorderedAccessViews(0, 1, &uav, 0);
 }
 
 void Engine::RenderEnd()

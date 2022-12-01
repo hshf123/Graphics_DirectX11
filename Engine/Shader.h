@@ -10,6 +10,7 @@ enum class SHADER_TYPE : uint8
 	DEFERRED,
 	FORWARD,
 	LIGHTING,
+	COMPUTE,
 };
 
 enum class RASTERIZER_TYPE : uint8
@@ -53,7 +54,8 @@ public:
 	Shader();
 	virtual ~Shader();
 
-	void Init(const WCHAR* path, ShaderInfo info = ShaderInfo(), LPCSTR vs = "VS_Main", LPCSTR ps = "PS_Main");
+	void CreateGraphicsShader(const WCHAR* path, ShaderInfo info = ShaderInfo(), LPCSTR vs = "VS_Main", LPCSTR ps = "PS_Main");
+	void CreateComputeShader(const WCHAR* path, LPCSTR main, LPCSTR version);
 	void Update();
 
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }
@@ -81,5 +83,10 @@ private:
 	ID3D11RasterizerState*		_rasterizer;
 	ID3D11DepthStencilState*	_depthStencilState;
 	ID3D11BlendState*			_blendState;
+
+private:
+
+	ID3DBlob* _csBlob = nullptr;
+	ID3D11ComputeShader* _computeShader;
 };
 

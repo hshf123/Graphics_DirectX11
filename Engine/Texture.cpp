@@ -62,6 +62,8 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, uint32 bin
 	HRESULT hr;
 	
 	D3D11_TEXTURE2D_DESC desc = CD3D11_TEXTURE2D_DESC();
+	desc.BindFlags = bindFlags;
+
 	if (bindFlags & D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL)
 	{
 		// Create depth stencil texture
@@ -69,11 +71,11 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, uint32 bin
 		desc.Height = height;
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		//desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.Format = DXGI_FORMAT_D32_FLOAT;
 		desc.SampleDesc.Count = 1;
 		desc.SampleDesc.Quality = 0;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 	}
@@ -87,16 +89,26 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, uint32 bin
 		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.SampleDesc.Count = 1;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+	}
+	else if (bindFlags & D3D11_BIND_FLAG::D3D11_BIND_UNORDERED_ACCESS)
+	{
+		desc.Width = width;
+		desc.Height = height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = format;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 	}
 
 	// Create Texture2D
 	hr = DEVICE->CreateTexture2D(&desc, nullptr, &_tex2D);
-	CHECK_FAIL(hr, L"Failed Create Depth Stencil Texture");
+	CHECK_FAIL(hr, L"Failed Create Texture2D");
 
-	assert(SUCCEEDED(hr));
 
 	CreateFromResource(_tex2D);
 }
@@ -136,6 +148,15 @@ void Texture::CreateFromResource(ID3D11Resource* tex2D)
 			// Create the render target view.
 			hr = DEVICE->CreateRenderTargetView(_tex2D, &rtvDesc, &_rtv);
 			CHECK_FAIL(hr, L"Failed Create Render Target View");
+		}
+		if (desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
+		{
+			D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = CD3D11_UNORDERED_ACCESS_VIEW_DESC();
+			uavDesc.Format = desc.Format;
+			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+			hr = DEVICE->CreateUnorderedAccessView(_tex2D, &uavDesc, &_uav);
+			CHECK_FAIL(hr, L"Failed Create Unordered Access View");
 		}
 		if (desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
 		{
