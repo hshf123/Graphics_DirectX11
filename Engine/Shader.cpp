@@ -16,12 +16,13 @@ Shader::~Shader()
 
 }
 
-void Shader::CreateGraphicsShader(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps)
+void Shader::CreateGraphicsShader(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps, LPCSTR gs)
 {
 	_info = info;
-	HRESULT hr;
 	CreateVertexShader(path, vs, "vs_5_0");
 	CreatePixelShader(path, ps, "ps_5_0");
+	if (lstrlenA(gs) != 0)
+		CreateGeometryShader(path, gs, "gs_5_0");
 	SetInputLayout();
 	SetRasterizerState();
 	SetDepthStencilState();
@@ -36,15 +37,14 @@ void Shader::CreateComputeShader(const WCHAR* path, LPCSTR main, LPCSTR version)
 	CHECK_FAIL(hr, L"Failed Compile Vertex Shader");
 
 	hr = DEVICE->CreateComputeShader(_csBlob->GetBufferPointer(), _csBlob->GetBufferSize(), nullptr, &_computeShader);
+	_csBlob->Release();
 	CHECK_FAIL(hr, L"Failed Compile Compute Shader");
 }
 
 void Shader::Update()
 {
 	if (GetShaderType() == SHADER_TYPE::COMPUTE)
-	{
 		CONTEXT->CSSetShader(_computeShader, nullptr, 0);
-	}
 	else
 	{
 		float blendFactor[4];
@@ -53,13 +53,14 @@ void Shader::Update()
 		blendFactor[1] = 0.0f;
 		blendFactor[2] = 0.0f;
 		blendFactor[3] = 0.0f;
-		// Set the input layout
-		CONTEXT->IASetInputLayout(_inputLayout);
-		CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
-		CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
-		CONTEXT->RSSetState(_rasterizer);
+		CONTEXT->IASetPrimitiveTopology(_info.topology);
 		CONTEXT->OMSetDepthStencilState(_depthStencilState, 0);
 		CONTEXT->OMSetBlendState(_blendState, blendFactor, 0xffffffff);
+		CONTEXT->IASetInputLayout(_inputLayout);
+		CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
+		CONTEXT->GSSetShader(_geometryShader, nullptr, 0);
+		CONTEXT->RSSetState(_rasterizer);
+		CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
 	}
 }
 
@@ -86,6 +87,19 @@ void Shader::CreatePixelShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR versio
 	hr = DEVICE->CreatePixelShader(_psBlob->GetBufferPointer(), _psBlob->GetBufferSize(), nullptr, &_pixelShader);
 	_psBlob->Release();
 	CHECK_FAIL(hr, L"Failed Create Pixel Shader");
+}
+
+void Shader::CreateGeometryShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
+{
+	HRESULT hr;
+	// Compile the geometry shader
+	hr = CompileShaderFromFile(path, mainFunc, version, &_gsBlob);
+	CHECK_FAIL(hr, L"Failed Compile Geometry Shader");
+
+	// Create the geometry shader
+	hr = DEVICE->CreateGeometryShader(_gsBlob->GetBufferPointer(), _gsBlob->GetBufferSize(), nullptr, &_geometryShader);
+	_gsBlob->Release();
+	CHECK_FAIL(hr, L"Failed Create Geometry Shader");
 }
 
 void Shader::SetInputLayout()
@@ -131,7 +145,8 @@ void Shader::SetRasterizerState()
 		break;
 	}
 	
-	DEVICE->CreateRasterizerState(&rasterizerDesc, &_rasterizer);
+	HRESULT hr = DEVICE->CreateRasterizerState(&rasterizerDesc, &_rasterizer);
+	CHECK_FAIL(hr, L"Failed to Create rasterizer state");
 }
 
 void Shader::SetDepthStencilState()
@@ -228,7 +243,7 @@ HRESULT Shader::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoi
 	{
 		if (pErrorBlob)
 		{
-			OutputDebugStringA(reinterpret_cast<const char*>(pErrorBlob->GetBufferPointer()));
+			::OutputDebugStringA(reinterpret_cast<const char*>(pErrorBlob->GetBufferPointer()));
 			pErrorBlob->Release();
 		}
 		return hr;

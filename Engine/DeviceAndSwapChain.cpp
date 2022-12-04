@@ -62,14 +62,28 @@ void DeviceAndSwapChain::Init(const WindowInfo& info)
 			break;
 	}
 
-	D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS hwOpts;
-	hr = _device->CheckFeatureSupport(D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS, &hwOpts, sizeof(hwOpts));	
-	if (hwOpts.ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x)
+	// Note this program doesn't handle full-screen swapchains so we block the ALT+ENTER shortcut
 	{
-		return;
+		IDXGIFactory1* dxgiFactory = nullptr;
+		{
+			IDXGIDevice* dxgiDevice = nullptr;
+			hr = _device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));
+			if (SUCCEEDED(hr))
+			{
+				IDXGIAdapter* adapter = nullptr;
+				hr = dxgiDevice->GetAdapter(&adapter);
+				if (SUCCEEDED(hr))
+				{
+					hr = adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&dxgiFactory));
+					adapter->Release();
+				}
+				dxgiDevice->Release();
+			}
+		}
+		if (FAILED(hr))
+			return;
+		dxgiFactory->MakeWindowAssociation(info.hWnd, DXGI_MWA_NO_ALT_ENTER);
 	}
-
-
 }
 
 void DeviceAndSwapChain::Present()

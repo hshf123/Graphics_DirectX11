@@ -74,5 +74,11 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
     return color;
 }
 
+float Rand(float2 co)
+{
+    // 1.234 0.234 frac은 소수점을 꺼내오는 함수 셰이더에는 랜덤함수가 없어서 꼼수로 만든 함수
+    return 0.5 + (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 0.5;
+    // 0.5 ~ 1사이의 랜덤값
+}
 
 #endif

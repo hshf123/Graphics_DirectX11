@@ -35,9 +35,9 @@ void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData = {};
-	InitData.pSysMem = &buffer[0];
-	hr = DEVICE->CreateBuffer(&bd, &InitData, &_vertexBuffer);
+	D3D11_SUBRESOURCE_DATA initData = {};
+	initData.pSysMem = &buffer[0];
+	hr = DEVICE->CreateBuffer(&bd, &initData, &_vertexBuffer);
 	CHECK_FAIL(hr, L"Failed Create Vertex Buffer");
 }
 
@@ -58,16 +58,14 @@ void Mesh::CreateIndexBuffer(const vector<uint32>& buffer)
 	CHECK_FAIL(hr, L"Failed Create Index Buffer");
 }
 
-void Mesh::Render()
+void Mesh::Render(uint32 instanceCount)
 {
 	// Set vertex buffer
 	uint32 stride = sizeof(Vertex);
 	uint32 offset = 0;
 	CONTEXT->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 	// Set index buffer
-	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	// Set primitive topology
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, offset);
 
-	CONTEXT->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
+	CONTEXT->DrawIndexedInstanced(_indexCount, instanceCount, 0, 0, 0);
 }

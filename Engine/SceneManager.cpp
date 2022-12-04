@@ -12,6 +12,7 @@
 
 #include "TestCameraScript.h"
 #include "Resources.h"
+#include "ParticleSystem.h"
 
 // ----------------------
 //		SceneManager
@@ -84,7 +85,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"ComputeShader");
 		material->SetShader(shader);
 		material->SetInt(0, 1);
-		CONTEXT->CSSetUnorderedAccessViews(static_cast<int8>(UAV_REGISTER::u0),1,  texture->GetUAVAddress(), nullptr);
+		CONTEXT->CSSetUnorderedAccessViews(static_cast<int32>(UAV_REGISTER::u0),1,  texture->GetUAVAddress(), nullptr);
 		// 쓰레드 그룹 (1 * 1024 * 1)
 		material->Dispatch(1, 1024, 1);
 	}
@@ -209,6 +210,17 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetSpecular(Vec3(0.2f, 0.2f, 0.2f));
 
 		scene->AddGameObject(light);
+	}
+#pragma endregion
+
+#pragma region ParticleSystem
+	{
+		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		particle->AddComponent(make_shared<Transform>());
+		particle->AddComponent(make_shared<ParticleSystem>());
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 100.f));
+		scene->AddGameObject(particle);
 	}
 #pragma endregion
 

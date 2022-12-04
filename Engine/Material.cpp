@@ -22,8 +22,12 @@ void Material::PushGraphicsData()
 	{
 		if (_textures[i] == nullptr)
 			continue;
-
+		
 		SRV_REGISTER reg = SRV_REGISTER(static_cast<int8>(SRV_REGISTER::t0) + i);
+		CONTEXT->VSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
+		CONTEXT->VSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
+		CONTEXT->GSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
+		CONTEXT->GSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 		CONTEXT->PSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
 		CONTEXT->PSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 	}
@@ -55,5 +59,4 @@ void Material::Dispatch(uint32 x, uint32 y, uint32 z)
 	PushComputeData();
 
 	CONTEXT->Dispatch(x, y, z);
-
 }

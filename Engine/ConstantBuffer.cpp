@@ -11,13 +11,7 @@ ConstantBuffer::ConstantBuffer()
 
 ConstantBuffer::~ConstantBuffer()
 {
-	if (_constantBuffer)
-	{
-		if (_constantBuffer != nullptr)
-			CONTEXT->Unmap(_constantBuffer, 0);
-
-		_constantBuffer = nullptr;
-	}
+	
 }
 
 // ------------------------
@@ -65,6 +59,7 @@ void ConstantBuffer::PushGraphicsData(void* buffer, uint32 size)
 	::memcpy(_mappedBuffer.pData, buffer, size);
 	CONTEXT->Unmap(_constantBuffer, 0);
 	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
+	CONTEXT->GSSetConstantBuffers(slot, 1, &_constantBuffer);
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
 }
 
@@ -76,6 +71,7 @@ void ConstantBuffer::SetGraphicsGlobalData(void* buffer, uint32 size)
 	uint32 slot = static_cast<uint32>(_reg);
 	CONTEXT->UpdateSubresource(_constantBuffer, 0, nullptr, buffer, 0, 0);
 	CONTEXT->VSSetConstantBuffers(slot, 1, &_constantBuffer);
+	CONTEXT->GSSetConstantBuffers(slot, 1, &_constantBuffer);
 	CONTEXT->PSSetConstantBuffers(slot, 1, &_constantBuffer);
 }
 

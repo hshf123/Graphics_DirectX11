@@ -20,6 +20,13 @@ void RenderTargetGroup::Create(RENDER_TARGET_GROUP_TYPE groupType, vector<Render
 void RenderTargetGroup::OMSetBackBufferRenderTargets()
 {
 	CONTEXT->OMSetRenderTargets(1, &_rtvArr[0], _dsTexture->GetDSV());
+
+	int8 count = static_cast<int8>(UAV_REGISTER::END);
+	ID3D11UnorderedAccessView* uav = nullptr;
+	for (uint8 i = static_cast<uint8>(UAV_REGISTER::u0); i < static_cast<uint8>(UAV_REGISTER::END); i++)
+	{
+		CONTEXT->CSSetUnorderedAccessViews(i, 1, &uav, 0);
+	}
 }
 
 void RenderTargetGroup::OMSetRenderTargets()

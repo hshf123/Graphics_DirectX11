@@ -66,19 +66,22 @@ void Engine::ResizeWindow(int32 width, int32 height)
 void Engine::RenderBegin()
 {
 	CONTEXT->RSSetViewports(1, &_viewport);
-
-	// 사용중인 리소스 초기화
-	int8 count = static_cast<int8>(SRV_REGISTER::END);
-	vector<ID3D11ShaderResourceView*> vec(count, nullptr);
-	CONTEXT->PSSetShaderResources(0, count, &vec[0]);
-	CONTEXT->CSSetShaderResources(0, count, &vec[0]);
-	ID3D11UnorderedAccessView* uav = nullptr;
-	CONTEXT->CSSetUnorderedAccessViews(0, 1, &uav, 0);
 }
 
 void Engine::RenderEnd()
 {
 	_deviceAndSwapChain->Present();
+
+	// 사용중인 리소스 초기화
+	int8 count = static_cast<int8>(SRV_REGISTER::END);
+	vector<ID3D11ShaderResourceView*> srv(count, nullptr);
+	for (uint8 i = static_cast<uint8>(SRV_REGISTER::t0); i < static_cast<uint8>(SRV_REGISTER::END); i++)
+	{
+		CONTEXT->VSSetShaderResources(i, count, &srv[0]);
+		CONTEXT->GSSetShaderResources(i, count, &srv[0]);
+		CONTEXT->PSSetShaderResources(i, count, &srv[0]);
+		CONTEXT->CSSetShaderResources(i, count, &srv[0]);
+	}
 }
 
 void Engine::ShowFPS()

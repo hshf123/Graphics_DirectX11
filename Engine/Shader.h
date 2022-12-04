@@ -10,6 +10,7 @@ enum class SHADER_TYPE : uint8
 	DEFERRED,
 	FORWARD,
 	LIGHTING,
+	PARTICLE,
 	COMPUTE,
 };
 
@@ -46,6 +47,7 @@ struct ShaderInfo
 	RASTERIZER_TYPE rasterizerType = RASTERIZER_TYPE::CULL_BACK;
 	DEPTH_STENCIL_TYPE depthStencilType = DEPTH_STENCIL_TYPE::LESS;
 	BLEND_TYPE blendType = BLEND_TYPE::DEFAULT;
+	D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
 class Shader : public Object
@@ -54,8 +56,9 @@ public:
 	Shader();
 	virtual ~Shader();
 
-	void CreateGraphicsShader(const WCHAR* path, ShaderInfo info = ShaderInfo(), LPCSTR vs = "VS_Main", LPCSTR ps = "PS_Main");
+	void CreateGraphicsShader(const WCHAR* path, ShaderInfo info = ShaderInfo(), LPCSTR vs = "VS_Main", LPCSTR ps = "PS_Main", LPCSTR gs = "");
 	void CreateComputeShader(const WCHAR* path, LPCSTR main, LPCSTR version);
+	
 	void Update();
 
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }
@@ -63,6 +66,7 @@ public:
 private:
 	void CreateVertexShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version);
 	void CreatePixelShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version);
+	void CreateGeometryShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version);
 	void SetInputLayout();
 	void SetRasterizerState();
 	void SetDepthStencilState();
@@ -75,18 +79,17 @@ private:
 
 	ID3DBlob*					_vsBlob = nullptr;
 	ID3DBlob*					_psBlob = nullptr;
+	ID3DBlob*					_csBlob = nullptr;
+	ID3DBlob*					_gsBlob = nullptr;
 
 	ID3D11VertexShader*			_vertexShader = nullptr;
 	ID3D11PixelShader*			_pixelShader = nullptr;
 	ID3D11InputLayout*			_inputLayout = nullptr;
+	ID3D11ComputeShader*		_computeShader = nullptr;
+	ID3D11GeometryShader*		_geometryShader = nullptr;
 
 	ID3D11RasterizerState*		_rasterizer;
 	ID3D11DepthStencilState*	_depthStencilState;
 	ID3D11BlendState*			_blendState;
-
-private:
-
-	ID3DBlob* _csBlob = nullptr;
-	ID3D11ComputeShader* _computeShader;
 };
 
