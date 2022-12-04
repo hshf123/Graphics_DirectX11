@@ -53,38 +53,56 @@ void Scene::FinalUpdate()
 void Scene::Render()
 {
 	PushLightData();
+	ClearRTV();
+	RenderShadow();
+	RenderDeferred();
+	RenderLights();
+	RenderFinal();
+	RenderForward();
+}
 
+void Scene::ClearRTV()
+{
 	// SwapChain Group 초기화
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(0);
+	// Shadow Group 초기화
+	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SHADOW)->ClearRenderTargetView();
 	// Deferred Group 초기화
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
 	// Light Group 초기화
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
-	
+}
+
+void Scene::RenderShadow()
+{
+	// Shadow OMSet
+	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SHADOW)->OMSetRenderTargets();
+
+	for (auto& light : _lights)
+	{
+		if (light->GetLightType() != LIGHT_TYPE::DIRECTIONAL_LIGHT)
+			continue;
+
+		light->RenderShadow();
+	}
+}
+
+void Scene::RenderDeferred()
+{
 	// Deferred OMSet
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 
 	shared_ptr<Camera> mainCamera = _cameras[0];
 	mainCamera->SortGameObject();
 	mainCamera->Render_Deferred();
-
-	RenderLights();
-	RenderFinal();
-
-	mainCamera->Render_Forward();
-
-	for (auto& camera : _cameras)
-	{
-		if(camera == mainCamera)
-			continue;
-
-		camera->SortGameObject();
-		camera->Render_Forward();
-	}
 }
 
 void Scene::RenderLights()
 {
+	shared_ptr<Camera> mainCamera = _cameras[0];
+	Camera::S_MatView = mainCamera->GetViewMatrix();
+	Camera::S_MatProjection = mainCamera->GetProjectionMatrix();
+
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
 	// 광원을 그린다.
@@ -99,6 +117,21 @@ void Scene::RenderFinal()
 
 	GET_SINGLE(Resources)->Get<Material>(L"Final")->PushGraphicsData();
 	GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
+}
+
+void Scene::RenderForward()
+{
+	shared_ptr<Camera> mainCamera = _cameras[0];
+	mainCamera->Render_Forward();
+
+	for (auto& camera : _cameras)
+	{
+		if (camera == mainCamera)
+			continue;
+
+		camera->SortGameObject();
+		camera->Render_Forward();
+	}
 }
 
 void Scene::PushLightData()

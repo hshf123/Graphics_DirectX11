@@ -24,11 +24,12 @@ public:
 	ID3D11UnorderedAccessView** GetUAVAddress() { return &_uav; }
 	ID3D11SamplerState** GetSamplerStateAddress() { return &_samplerState; }
 
-private:
-
+	float GetWidth() { return _desc.Width; }
+	float GetHeight() { return _desc.Height; }
 
 private:
 	ScratchImage			 		_image;
+	D3D11_TEXTURE2D_DESC			_desc;
 	ID3D11Texture2D*				_tex2D;
 
 	ID3D11RenderTargetView*			_rtv;

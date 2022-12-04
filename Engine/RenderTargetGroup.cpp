@@ -19,6 +19,12 @@ void RenderTargetGroup::Create(RENDER_TARGET_GROUP_TYPE groupType, vector<Render
 
 void RenderTargetGroup::OMSetBackBufferRenderTargets()
 {
+	D3D11_VIEWPORT vp = D3D11_VIEWPORT{ 0.f, 0.f, _rtVec[0].target->GetWidth() , _rtVec[0].target->GetHeight(), 0.f, 1.f };
+	D3D11_RECT rect = D3D11_RECT{ 0, 0, static_cast<LONG>(_rtVec[0].target->GetWidth()),  static_cast<LONG>(_rtVec[0].target->GetHeight()) };
+
+	CONTEXT->RSSetViewports(1, &vp);
+	CONTEXT->RSSetScissorRects(1, &rect);
+
 	CONTEXT->OMSetRenderTargets(1, &_rtvArr[0], _dsTexture->GetDSV());
 
 	int8 count = static_cast<int8>(UAV_REGISTER::END);
@@ -31,6 +37,12 @@ void RenderTargetGroup::OMSetBackBufferRenderTargets()
 
 void RenderTargetGroup::OMSetRenderTargets()
 {
+	D3D11_VIEWPORT vp = D3D11_VIEWPORT{ 0.f, 0.f, _rtVec[0].target->GetWidth() , _rtVec[0].target->GetHeight(), 0.f, 1.f };
+	D3D11_RECT rect = D3D11_RECT{ 0, 0, static_cast<LONG>(_rtVec[0].target->GetWidth()),  static_cast<LONG>(_rtVec[0].target->GetHeight()) };
+
+	CONTEXT->RSSetViewports(1, &vp);
+	CONTEXT->RSSetScissorRects(1, &rect);
+
 	CONTEXT->OMSetRenderTargets(_rtCount, &_rtvArr[0], _dsTexture->GetDSV());
 }
 

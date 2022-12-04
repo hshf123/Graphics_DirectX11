@@ -36,10 +36,10 @@ void Texture::Load(const wstring& path)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	D3D11_TEXTURE2D_DESC textureDesc = CD3D11_TEXTURE2D_DESC();
-	_tex2D->GetDesc(&textureDesc);
+	_desc = CD3D11_TEXTURE2D_DESC();
+	_tex2D->GetDesc(&_desc);
 
-	srvDesc.Format = textureDesc.Format;
+	srvDesc.Format = _desc.Format;
 
 	hr = DEVICE->CreateShaderResourceView(_tex2D, &srvDesc, &_srv);
 	CHECK_FAIL(hr, L"Failed to Create ShaderResourceView");
@@ -61,52 +61,54 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, uint32 bin
 {
 	HRESULT hr;
 	
-	D3D11_TEXTURE2D_DESC desc = CD3D11_TEXTURE2D_DESC();
-	desc.BindFlags = bindFlags;
+	_desc = CD3D11_TEXTURE2D_DESC();
+	_desc.BindFlags = bindFlags;
 
 	if (bindFlags & D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL)
 	{
 		// Create depth stencil texture
-		desc.Width = width;
-		desc.Height = height;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
+		_desc.Width = width;
+		_desc.Height = height;
+		_desc.MipLevels = 1;
+		_desc.ArraySize = 1;
 		//desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.Format = DXGI_FORMAT_D32_FLOAT;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
+		_desc.Format = DXGI_FORMAT_D32_FLOAT;
+		_desc.SampleDesc.Count = 1;
+		_desc.SampleDesc.Quality = 0;
+		_desc.Usage = D3D11_USAGE_DEFAULT;
+		_desc.CPUAccessFlags = 0;
+		_desc.MiscFlags = 0;
+
+		
 	}
 	else if (bindFlags & D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET)
 	{
 		// Setup the render target texture description.
-		desc.Width = width;
-		desc.Height = height;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		desc.SampleDesc.Count = 1;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
+		_desc.Width = width;
+		_desc.Height = height;
+		_desc.MipLevels = 1;
+		_desc.ArraySize = 1;
+		_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		_desc.SampleDesc.Count = 1;
+		_desc.Usage = D3D11_USAGE_DEFAULT;
+		_desc.CPUAccessFlags = 0;
+		_desc.MiscFlags = 0;
 	}
 	else if (bindFlags & D3D11_BIND_FLAG::D3D11_BIND_UNORDERED_ACCESS)
 	{
-		desc.Width = width;
-		desc.Height = height;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = format;
-		desc.SampleDesc.Count = 1;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
+		_desc.Width = width;
+		_desc.Height = height;
+		_desc.MipLevels = 1;
+		_desc.ArraySize = 1;
+		_desc.Format = format;
+		_desc.SampleDesc.Count = 1;
+		_desc.Usage = D3D11_USAGE_DEFAULT;
+		_desc.CPUAccessFlags = 0;
+		_desc.MiscFlags = 0;
 	}
 
 	// Create Texture2D
-	hr = DEVICE->CreateTexture2D(&desc, nullptr, &_tex2D);
+	hr = DEVICE->CreateTexture2D(&_desc, nullptr, &_tex2D);
 	CHECK_FAIL(hr, L"Failed Create Texture2D");
 
 
@@ -119,18 +121,18 @@ void Texture::CreateFromResource(ID3D11Resource* tex2D)
 
 	_tex2D = static_cast<ID3D11Texture2D*>(tex2D);
 
-	D3D11_TEXTURE2D_DESC desc = CD3D11_TEXTURE2D_DESC();
-	_tex2D->GetDesc(&desc);
+	_desc = CD3D11_TEXTURE2D_DESC();
+	_tex2D->GetDesc(&_desc);
 
 	// 주요 조합
 	// - DSV 단독 (조합X)
 	// - SRV
 	// - RTV + SRV
-	if (desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
+	if (_desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
 	{
 		// DSV
 		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = CD3D11_DEPTH_STENCIL_VIEW_DESC();
-		dsvDesc.Format = desc.Format;
+		dsvDesc.Format = _desc.Format;
 		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Texture2D.MipSlice = 0;
 		hr = DEVICE->CreateDepthStencilView(_tex2D, &dsvDesc, &_dsv);
@@ -138,32 +140,32 @@ void Texture::CreateFromResource(ID3D11Resource* tex2D)
 	}
 	else
 	{
-		if (desc.BindFlags & D3D11_BIND_RENDER_TARGET)
+		if (_desc.BindFlags & D3D11_BIND_RENDER_TARGET)
 		{
 			// RTV
 			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = CD3D11_RENDER_TARGET_VIEW_DESC();
-			rtvDesc.Format = desc.Format;
+			rtvDesc.Format = _desc.Format;
 			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			rtvDesc.Texture2D.MipSlice = 0;
 			// Create the render target view.
 			hr = DEVICE->CreateRenderTargetView(_tex2D, &rtvDesc, &_rtv);
 			CHECK_FAIL(hr, L"Failed Create Render Target View");
 		}
-		if (desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
+		if (_desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
 		{
 			D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = CD3D11_UNORDERED_ACCESS_VIEW_DESC();
-			uavDesc.Format = desc.Format;
+			uavDesc.Format = _desc.Format;
 			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
 			hr = DEVICE->CreateUnorderedAccessView(_tex2D, &uavDesc, &_uav);
 			CHECK_FAIL(hr, L"Failed Create Unordered Access View");
 		}
-		if (desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
+		if (_desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
 		{
 			// SRV
 			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = CD3D11_SHADER_RESOURCE_VIEW_DESC();
 			// Setup the description of the shader resource view.
-			srvDesc.Format = desc.Format;
+			srvDesc.Format = _desc.Format;
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Texture2D.MostDetailedMip = 0;
 			srvDesc.Texture2D.MipLevels = 1;

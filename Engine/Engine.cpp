@@ -17,10 +17,6 @@ void Engine::Init(const WindowInfo& info)
 {
 	_info = info;
 
-	// 그려질 화면 크기 설정
-	_viewport = { 0,0,static_cast<FLOAT>(_info.width), static_cast<FLOAT>(_info.height), 0.f, 1.f};
-	_scissorRect = CD3D11_RECT(0, 0, _info.width, _info.height);
-
 	_deviceAndSwapChain->Init(info);
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
@@ -67,7 +63,7 @@ void Engine::ResizeWindow(int32 width, int32 height)
 
 void Engine::RenderBegin()
 {
-	CONTEXT->RSSetViewports(1, &_viewport);
+
 }
 
 void Engine::RenderEnd()
@@ -123,6 +119,22 @@ void Engine::CreateRenderTargetGroups()
 
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<RenderTargetGroup>();
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture);
+	}
+
+	// Shadow Group
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_SHADOW_GROUP_MEMBER_COUNT);
+
+		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"ShadowTarget",
+			DXGI_FORMAT_R32_FLOAT, 4096, 4096,
+			D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+		shared_ptr<Texture> shadowDepthTexture = GET_SINGLE(Resources)->CreateTexture(L"ShadowDepthStencil",
+			DXGI_FORMAT_D32_FLOAT, 4096, 4096,
+			D3D11_BIND_DEPTH_STENCIL);
+
+		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SHADOW)] = make_shared<RenderTargetGroup>();
+		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SHADOW)]->Create(RENDER_TARGET_GROUP_TYPE::SHADOW, rtVec, shadowDepthTexture);
 	}
 
 	// Deferred Group

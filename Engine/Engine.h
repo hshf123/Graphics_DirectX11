@@ -39,8 +39,6 @@ private:
 
 private:
 	WindowInfo								_info;
-	D3D11_VIEWPORT							_viewport = {};
-	D3D11_RECT								_scissorRect = {};
 
 	shared_ptr<DeviceAndSwapChain>			_deviceAndSwapChain = make_shared<DeviceAndSwapChain>();
 	vector<shared_ptr<ConstantBuffer>>		_constantBuffers;
