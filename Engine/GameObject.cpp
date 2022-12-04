@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "ParticleSystem.h"
+#include "Terrain.h"
 #include "MonoBehaviour.h"
 
 // -------------------
@@ -121,6 +122,12 @@ std::shared_ptr<ParticleSystem> GameObject::GetParticleSystem()
 {
 	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PARTICLE_SYSTEM);
 	return static_pointer_cast<ParticleSystem>(component);
+}
+
+std::shared_ptr<Terrain> GameObject::GetTerrain()
+{
+	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::TERRAIN);
+	return static_pointer_cast<Terrain>(component);
 }
 
 void GameObject::AddComponent(shared_ptr<Component> component)

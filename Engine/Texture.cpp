@@ -36,7 +36,6 @@ void Texture::Load(const wstring& path)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	_desc = CD3D11_TEXTURE2D_DESC();
 	_tex2D->GetDesc(&_desc);
 
 	srvDesc.Format = _desc.Format;
