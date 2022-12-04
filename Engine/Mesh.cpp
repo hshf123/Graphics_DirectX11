@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Engine.h"
 #include "Material.h"
+#include "InstancingBuffer.h"
 
 Mesh::Mesh() : Object(OBJECT_TYPE::MESH)
 {
@@ -65,7 +66,20 @@ void Mesh::Render(uint32 instanceCount)
 	uint32 offset = 0;
 	CONTEXT->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
 	// Set index buffer
-	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	CONTEXT->DrawIndexedInstanced(_indexCount, instanceCount, 0, 0, 0);
+}
+
+void Mesh::Render(shared_ptr<InstancingBuffer> buffer)
+{
+	// Set vertex buffer
+	ID3D11Buffer* buffers[] = { _vertexBuffer, buffer->GetBuffer() };
+	uint32 strides[] = { sizeof(Vertex), sizeof(InstancingParams) };
+	uint32 offset[] = { 0,0 };
+	CONTEXT->IASetVertexBuffers(0, 2, buffers, strides, offset);
+	// Set index buffer
+	CONTEXT->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	CONTEXT->DrawIndexedInstanced(_indexCount, buffer->GetCount(), 0, 0, 0);
 }

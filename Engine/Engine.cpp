@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "Input.h"
 #include "Timer.h"
+#include "InstancingManager.h"
 
 // ------------------
 //		Engine
@@ -40,6 +41,7 @@ void Engine::Update()
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
 	GET_SINGLE(SceneManager)->Update();
+	GET_SINGLE(InstancingManager)->ClearBuffer();
 
 	Render();
 

@@ -466,4 +466,13 @@ void Resources::CreateDefaultMaterial()
 
 		Add<Material>(L"ComputeParticle", material);
 	}
+
+	// GameObject
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(GET_SINGLE(Resources)->Get<Shader>(L"Deferred"));
+		material->SetTexture(0, GET_SINGLE(Resources)->Load<Texture>(L"Leather", L"..\\Resources\\Texture\\Leather.jpg"));
+		material->SetTexture(1, GET_SINGLE(Resources)->Load<Texture>(L"Leather_Normal", L"..\\Resources\\Texture\\Leather_Normal.jpg"));
+		Add<Material>(L"GameObject", material);
+	}
 }
