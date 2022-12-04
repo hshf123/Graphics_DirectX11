@@ -26,6 +26,10 @@ void Material::PushGraphicsData()
 		SRV_REGISTER reg = SRV_REGISTER(static_cast<int8>(SRV_REGISTER::t0) + i);
 		CONTEXT->VSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
 		CONTEXT->VSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
+		CONTEXT->HSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
+		CONTEXT->HSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
+		CONTEXT->DSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
+		CONTEXT->DSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 		CONTEXT->GSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());
 		CONTEXT->GSSetSamplers(static_cast<uint32>(reg), 1, _textures[i]->GetSamplerStateAddress());
 		CONTEXT->PSSetShaderResources(static_cast<uint32>(reg), 1, _textures[i]->GetSRVAddress());

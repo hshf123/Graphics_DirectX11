@@ -79,6 +79,10 @@ void StructuredBuffer::PushGraphicsData(SRV_REGISTER reg)
 	uint32 startSlot = static_cast<uint32>(reg);
 	CONTEXT->VSSetShaderResources(startSlot, 1, &_srv);
 	CONTEXT->VSSetSamplers(startSlot, 1, &_samplerState);
+	CONTEXT->HSSetShaderResources(startSlot, 1, &_srv);
+	CONTEXT->HSSetSamplers(startSlot, 1, &_samplerState);
+	CONTEXT->DSSetShaderResources(startSlot, 1, &_srv);
+	CONTEXT->DSSetSamplers(startSlot, 1, &_samplerState);
 	CONTEXT->GSSetShaderResources(startSlot, 1, &_srv);
 	CONTEXT->GSSetSamplers(startSlot, 1, &_samplerState);
 	CONTEXT->PSSetShaderResources(startSlot, 1, &_srv);

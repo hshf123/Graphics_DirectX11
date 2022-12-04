@@ -76,6 +76,8 @@ void Engine::RenderEnd()
 	for (uint8 i = static_cast<uint8>(SRV_REGISTER::t0); i < static_cast<uint8>(SRV_REGISTER::END); i++)
 	{
 		CONTEXT->VSSetShaderResources(i, count, &srv[0]);
+		CONTEXT->HSSetShaderResources(i, count, &srv[0]);
+		CONTEXT->DSSetShaderResources(i, count, &srv[0]);
 		CONTEXT->GSSetShaderResources(i, count, &srv[0]);
 		CONTEXT->PSSetShaderResources(i, count, &srv[0]);
 		CONTEXT->CSSetShaderResources(i, count, &srv[0]);

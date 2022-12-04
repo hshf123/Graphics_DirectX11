@@ -16,13 +16,18 @@ Shader::~Shader()
 
 }
 
-void Shader::CreateGraphicsShader(const WCHAR* path, ShaderInfo info, LPCSTR vs, LPCSTR ps, LPCSTR gs)
+void Shader::CreateGraphicsShader(const WCHAR* path, ShaderInfo info, ShaderArg arg)
 {
 	_info = info;
-	CreateVertexShader(path, vs, "vs_5_0");
-	CreatePixelShader(path, ps, "ps_5_0");
-	if (lstrlenA(gs) != 0)
-		CreateGeometryShader(path, gs, "gs_5_0");
+	CreateVertexShader(path, arg.vs, "vs_5_0");
+	if (lstrlenA(arg.hs) != 0)
+		CreateHullShader(path, arg.hs, "hs_5_0");
+	if (lstrlenA(arg.ds) != 0)
+		CreateDomainShader(path, arg.ds, "ds_5_0");
+	if (lstrlenA(arg.gs) != 0)
+		CreateGeometryShader(path, arg.gs, "gs_5_0");
+	CreatePixelShader(path, arg.ps, "ps_5_0");
+
 	SetInputLayout();
 	SetRasterizerState();
 	SetDepthStencilState();
@@ -58,6 +63,8 @@ void Shader::Update()
 		CONTEXT->OMSetBlendState(_blendState, blendFactor, 0xffffffff);
 		CONTEXT->IASetInputLayout(_inputLayout);
 		CONTEXT->VSSetShader(_vertexShader, nullptr, 0);
+		CONTEXT->HSSetShader(_hullShader, nullptr, 0);
+		CONTEXT->DSSetShader(_domainShader, nullptr, 0);
 		CONTEXT->GSSetShader(_geometryShader, nullptr, 0);
 		CONTEXT->RSSetState(_rasterizer);
 		CONTEXT->PSSetShader(_pixelShader, nullptr, 0);
@@ -76,17 +83,30 @@ void Shader::CreateVertexShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR versi
 	CHECK_FAIL(hr, L"Failed Create Vertex Shader");
 }
 
-void Shader::CreatePixelShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
+void Shader::CreateHullShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
 {
 	HRESULT hr;
-	// Compile the pixel shader
-	hr = CompileShaderFromFile(path, mainFunc, version, &_psBlob);
-	CHECK_FAIL(hr, L"Failed Compile Pixel Shader");
+	// Compile the Hull shader
+	hr = CompileShaderFromFile(path, mainFunc, version, &_hsBlob);
+	CHECK_FAIL(hr, L"Failed Compile Hull Shader");
 
 	// Create the pixel shader
-	hr = DEVICE->CreatePixelShader(_psBlob->GetBufferPointer(), _psBlob->GetBufferSize(), nullptr, &_pixelShader);
-	_psBlob->Release();
-	CHECK_FAIL(hr, L"Failed Create Pixel Shader");
+	hr = DEVICE->CreateHullShader(_hsBlob->GetBufferPointer(), _hsBlob->GetBufferSize(), nullptr, &_hullShader);
+	_hsBlob->Release();
+	CHECK_FAIL(hr, L"Failed Create Hull Shader");
+}
+
+void Shader::CreateDomainShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
+{
+	HRESULT hr;
+	// Compile the Domain shader
+	hr = CompileShaderFromFile(path, mainFunc, version, &_dsBlob);
+	CHECK_FAIL(hr, L"Failed Compile Domain Shader");
+
+	// Create the pixel shader
+	hr = DEVICE->CreateDomainShader(_dsBlob->GetBufferPointer(), _dsBlob->GetBufferSize(), nullptr, &_domainShader);
+	_dsBlob->Release();
+	CHECK_FAIL(hr, L"Failed Create Domain Shader");
 }
 
 void Shader::CreateGeometryShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
@@ -100,6 +120,19 @@ void Shader::CreateGeometryShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR ver
 	hr = DEVICE->CreateGeometryShader(_gsBlob->GetBufferPointer(), _gsBlob->GetBufferSize(), nullptr, &_geometryShader);
 	_gsBlob->Release();
 	CHECK_FAIL(hr, L"Failed Create Geometry Shader");
+}
+
+void Shader::CreatePixelShader(const WCHAR* path, LPCSTR mainFunc, LPCSTR version)
+{
+	HRESULT hr;
+	// Compile the pixel shader
+	hr = CompileShaderFromFile(path, mainFunc, version, &_psBlob);
+	CHECK_FAIL(hr, L"Failed Compile Pixel Shader");
+
+	// Create the pixel shader
+	hr = DEVICE->CreatePixelShader(_psBlob->GetBufferPointer(), _psBlob->GetBufferSize(), nullptr, &_pixelShader);
+	_psBlob->Release();
+	CHECK_FAIL(hr, L"Failed Create Pixel Shader");
 }
 
 void Shader::SetInputLayout()
