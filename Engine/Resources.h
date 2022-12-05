@@ -37,6 +37,8 @@ public:
 	shared_ptr<Texture> CreateTexture(const wstring& name, DXGI_FORMAT format, uint32 width, uint32 height, uint32 bindFlags);
 	shared_ptr<Texture> CreateTextureFromResource(const wstring& name, ID3D11Resource* tex2D);
 
+	shared_ptr<class MeshData> LoadFBX(const wstring& path);
+
 private:
 	void CreateDefaultShader();
 	void CreateDefaultMaterial();

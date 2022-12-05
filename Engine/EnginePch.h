@@ -18,8 +18,9 @@
 
 #include "SimpleMath.h"
 #include "SimpleMath.inl"
-#include <DirectXTex.h>
-#include <DirectXTex.inl>
+#include <DirectXTex\\DirectXTex.h>
+#include <DirectXTex\\DirectXTex.inl>
+#include "FBX/fbxsdk.h"
 
 #define _HAS_STD_BYTE 0
 #include <filesystem>
@@ -34,8 +35,16 @@ using namespace DirectX;
 #pragma comment(lib,"d3d11.lib")
 #ifdef _DEBUG
 #pragma comment(lib, "DirectXTex\\DirectXTex_Debug.lib")
+
+#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
+#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
 #else
-#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+#pragma comment(lib, "FBX\\DirectXTex.lib")
+
+#pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\release\\libxml2-md.lib")
+#pragma comment(lib, "FBX\\release\\zlib-md.lib")
 #endif
 
 // -----------------
@@ -151,6 +160,8 @@ struct Vertex
 	Vec2 uv;
 	Vec3 normal;
 	Vec3 tangent;
+	Vec4 weights;
+	Vec4 indices;
 };
 
 struct TransformParams
@@ -162,3 +173,10 @@ struct TransformParams
 	Matrix matWVP;
 	Matrix matViewInv;
 };
+
+// -----------------
+//		Utils
+// -----------------
+
+wstring s2ws(const string& s);
+string ws2s(const wstring& s);

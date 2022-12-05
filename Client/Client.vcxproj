@@ -74,21 +74,25 @@
     <OutDir>$(SolutionDir)Output\</OutDir>
     <LibraryPath>$(SolutionDir)Output\;$(SolutionDir)Library\Lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Engine\;$(SolutionDir)Library\Include\;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Library\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Output\</OutDir>
     <LibraryPath>$(SolutionDir)Output\;$(SolutionDir)Library\Lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Engine\;$(SolutionDir)Library\Include\;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Library\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\</OutDir>
     <LibraryPath>$(SolutionDir)Output\;$(SolutionDir)Library\Lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Engine\;$(SolutionDir)Library\Include\;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Library\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\</OutDir>
     <LibraryPath>$(SolutionDir)Output\;$(SolutionDir)Library\Lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Engine\;$(SolutionDir)Library\Include\;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Library\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
